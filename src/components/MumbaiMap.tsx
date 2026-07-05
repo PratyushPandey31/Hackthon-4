@@ -263,6 +263,12 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
             {/* Background Grid */}
             <rect width="300" height="550" fill="url(#mapGrid)" pointerEvents="none" />
 
+            {/* Water body labels for realistic cartography */}
+            <text x="25" y="240" fill="rgba(0, 210, 255, 0.12)" fontSize="9" fontWeight="700" letterSpacing="0.15em" transform="rotate(-90 25 240)" pointerEvents="none">ARABIAN SEA</text>
+            <text x="275" y="320" fill="rgba(0, 210, 255, 0.12)" fontSize="9" fontWeight="700" letterSpacing="0.15em" transform="rotate(90 275 320)" pointerEvents="none">THANE CREEK</text>
+            <text x="45" y="490" fill="rgba(255, 255, 255, 0.08)" fontSize="8" fontWeight="600" letterSpacing="0.05em" pointerEvents="none">BACK BAY</text>
+            <text x="180" y="475" fill="rgba(255, 255, 255, 0.08)" fontSize="8" fontWeight="600" letterSpacing="0.05em" pointerEvents="none">HARBOUR BAY</text>
+
             {/* SVG Wards */}
             {WARDS.map((ward) => {
               const status = calculateWaterLogging(ward);
