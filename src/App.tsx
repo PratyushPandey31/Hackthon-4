@@ -131,7 +131,7 @@ function App() {
     return { text: 'HIGH TIDE WARNING', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' };
   };
 
-  // Check login session on mount
+  // Check login session and register click hollow listener on mount
   useEffect(() => {
     const loggedUser = localStorage.getItem('floodpulse_active_user');
     const loggedEmail = localStorage.getItem('floodpulse_active_email');
@@ -139,6 +139,29 @@ function App() {
       setUser(loggedUser);
       setUserEmail(loggedEmail);
     }
+
+    const handleGlobalClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const card = target.closest('.glass-panel');
+      if (card) {
+        // Remove active class from all other cards
+        document.querySelectorAll('.glass-panel').forEach(el => {
+          if (el !== card) el.classList.remove('active-hollow-card');
+        });
+        // Toggle on this card
+        card.classList.toggle('active-hollow-card');
+      } else {
+        // Clicked outside, clear active cards
+        document.querySelectorAll('.glass-panel').forEach(el => {
+          el.classList.remove('active-hollow-card');
+        });
+      }
+    };
+
+    document.addEventListener('click', handleGlobalClick);
+    return () => {
+      document.removeEventListener('click', handleGlobalClick);
+    };
   }, []);
 
   const handleLoginSuccess = (name: string, email: string) => {
