@@ -307,7 +307,22 @@ export const SiloUnifier: React.FC<SiloUnifierProps> = ({ isAdmin, onParsedSOS }
                         </div>
                         <div style={{ background: 'rgba(255,255,255,0.02)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-light)' }}>
                           <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Callback Info</div>
-                          <div style={{ fontSize: '0.9rem', fontWeight: 700 }}>{parsedResult.contact}</div>
+                          <div style={{ fontSize: '0.9rem', fontWeight: 700, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                            <span>{parsedResult.contact}</span>
+                            {parsedResult.contact !== 'NOT AVAILABLE' && parsedResult.contact !== 'Unknown' && (
+                              <a 
+                                href={`tel:${parsedResult.contact}`} 
+                                style={{ 
+                                  color: 'var(--accent-cyan)', 
+                                  textDecoration: 'underline', 
+                                  fontSize: '0.75rem',
+                                  cursor: 'pointer'
+                                }}
+                              >
+                                [Dial]
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </div>
 

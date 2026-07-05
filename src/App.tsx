@@ -905,13 +905,28 @@ function App() {
                             
                             <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
                             
+                            <a
+                              href={`tel:${ticket.contact}`}
+                              style={{
+                                color: 'var(--accent-cyan)',
+                                textDecoration: 'underline',
+                                fontSize: '0.7rem',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
+                            >
+                              [Dial Victim]
+                            </a>
+
+                            <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+
                             <button
                               onClick={() => alert(`Analyst Log [Contact: ${ticket.contact} | Exposures: ${ticket.victimCount} citizens]`)}
                               style={{
                                 background: 'none',
                                 border: 'none',
                                 padding: 0,
-                                color: 'rgba(0, 210, 255, 0.6)',
+                                color: 'rgba(255, 255, 255, 0.4)',
                                 textDecoration: 'underline',
                                 fontSize: '0.7rem',
                                 fontWeight: 600,
