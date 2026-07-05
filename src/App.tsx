@@ -104,6 +104,7 @@ function App() {
   const [logLevelFilter, setLogLevelFilter] = useState<string>('ALL');
   const [scanProgress, setScanProgress] = useState<number>(35);
   const [scanningSector, setScanningSector] = useState<string>('WARD L (Kurla)');
+  const [scanSectorTarget, setScanSectorTarget] = useState<string>('ALL');
 
   const [systemLogs, setSystemLogs] = useState<string[]>([
     `[INFO] [${new Date().toLocaleDateString()} 14:05:22] - NGO dispatch vessels synced. 6 crews placed on standby.`,
@@ -183,10 +184,14 @@ function App() {
     const interval = setInterval(() => {
       setScanProgress(prev => {
         if (prev >= 100) {
-          const nextSector = sectors[Math.floor(Math.random() * sectors.length)];
-          setScanningSector(nextSector);
-          // Let's add the system log using the correct helper
-          addSystemLog(`Systems telemetry sweep complete for ${nextSector}. Integrity status: SECURE.`, 'INFO');
+          if (scanSectorTarget === 'ALL') {
+            const nextSector = sectors[Math.floor(Math.random() * sectors.length)];
+            setScanningSector(nextSector);
+            addSystemLog(`Systems telemetry sweep complete for ${nextSector}. Integrity status: SECURE.`, 'INFO');
+          } else {
+            setScanningSector(scanSectorTarget);
+            addSystemLog(`Focused tactical sweep complete for ${scanSectorTarget}. Vulnerability profile: SAFE.`, 'INFO');
+          }
           return 0;
         }
         return prev + 10;
@@ -194,7 +199,7 @@ function App() {
     }, 1200);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [scanSectorTarget]);
 
   const handleLoginSuccess = (name: string, email: string) => {
     setUser(name);
@@ -1274,9 +1279,52 @@ function App() {
 
             {/* Live Doppler Scan Ticker HUD */}
             <div style={{ background: 'rgba(0, 245, 212, 0.03)', border: '1px solid rgba(0, 245, 212, 0.12)', borderRadius: '6px', padding: '12px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', fontFamily: 'monospace' }}>
-                <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>📡 ACTIVE MET-RADAR SWEEP: WARD INTEGRITY ANALYSIS</span>
-                <span style={{ color: 'white', fontWeight: 600 }}>SCANNING: <span style={{ color: 'var(--accent-yellow)' }}>{scanningSector}</span></span>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '8px' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', textAlign: 'left' }}>
+                  <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold', fontSize: '0.75rem', fontFamily: 'monospace' }}>📡 ACTIVE MET-RADAR SWEEP: WARD INTEGRITY ANALYSIS</span>
+                  <span style={{ color: 'rgba(255,255,255,0.4)', fontSize: '0.65rem', fontFamily: 'monospace' }}>ACTIVE TARGET: <span style={{ color: 'var(--accent-yellow)', fontWeight: 'bold' }}>{scanningSector}</span></span>
+                </div>
+                
+                {/* Region Selector and Manual Override */}
+                <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                  <select
+                    value={scanSectorTarget}
+                    onChange={(e) => {
+                      setScanSectorTarget(e.target.value);
+                      if (e.target.value !== 'ALL') {
+                        setScanningSector(e.target.value);
+                      }
+                      setScanProgress(0);
+                    }}
+                    className="input-field"
+                    style={{ padding: '2px 8px', fontSize: '0.7rem', width: '150px', height: '24px', cursor: 'pointer' }}
+                  >
+                    <option value="ALL">ALL SECTORS (AUTO)</option>
+                    <option value="WARD L (Kurla)">WARD L (Kurla)</option>
+                    <option value="WARD G/S (Dadar)">WARD G/S (Dadar)</option>
+                    <option value="WARD F/N (Sion)">WARD F/N (Sion)</option>
+                    <option value="WARD H/W (Bandra)">WARD H/W (Bandra)</option>
+                    <option value="WARD K/W (Andheri)">WARD K/W (Andheri)</option>
+                    <option value="WARD A (Colaba)">WARD A (Colaba)</option>
+                    <option value="WARD P/N (Malad)">WARD P/N (Malad)</option>
+                    <option value="WARD G/N (Dharavi)">WARD G/N (Dharavi)</option>
+                    <option value="WARD E (Byculla)">WARD E (Byculla)</option>
+                    <option value="WARD M/W (Chembur)">WARD M/W (Chembur)</option>
+                    <option value="WARD H/E (Santacruz)">WARD H/E (Santacruz)</option>
+                    <option value="WARD N (Ghatkopar)">WARD N (Ghatkopar)</option>
+                  </select>
+
+                  <button
+                    onClick={() => {
+                      setScanProgress(100);
+                      addSystemLog(`Manual sweep override triggered by Commander. Focus: ${scanningSector}.`, 'WARNING');
+                    }}
+                    className="btn-primary"
+                    style={{ padding: '0 8px', fontSize: '0.65rem', height: '24px', border: 'none', background: 'var(--gradient-primary)', borderRadius: '4px' }}
+                  >
+                    SCAN NOW
+                  </button>
+                </div>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                 <div style={{ flex: 1, height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
