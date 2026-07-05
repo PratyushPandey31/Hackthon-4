@@ -263,6 +263,31 @@ export const AuthPortal: React.FC<AuthPortalProps> = ({ onLoginSuccess }) => {
               </>
             )}
           </button>
+
+          {isLogin && (
+            <button
+              type="button"
+              onClick={() => {
+                setEmail('admin@floodpulse.in');
+                setPassword('admin123');
+                onLoginSuccess('Pratyush Pandey');
+              }}
+              className="btn-secondary"
+              style={{
+                width: '100%',
+                marginTop: '4px',
+                background: 'rgba(0, 210, 255, 0.05)',
+                borderColor: 'rgba(0, 210, 255, 0.2)',
+                color: 'var(--accent-blue)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '8px'
+              }}
+            >
+              Quick Login as Admin (Bypass)
+            </button>
+          )}
         </form>
 
         <div style={{ marginTop: '24px', borderTop: '1px solid var(--border-light)', paddingTop: '20px', fontSize: '0.85rem' }}>
