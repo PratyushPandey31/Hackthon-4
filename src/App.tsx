@@ -15,8 +15,10 @@ import {
   RefreshCw,
   Check,
   MapPin,
-  Phone
+  Phone,
+  Users
 } from 'lucide-react';
+import { UserDirectory } from './components/UserDirectory';
 import confetti from 'canvas-confetti';
 
 interface SOSTicket {
@@ -65,10 +67,11 @@ const INITIAL_SOS_TICKETS: SOSTicket[] = [
 
 function App() {
   const [user, setUser] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string>('');
   const [rainfall, setRainfall] = useState(45); // mm/hr
   const [tide, setTide] = useState(2.8); // meters
   const [drainage, setDrainage] = useState(75); // efficiency %
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'unifier' | 'pitch' | 'report'>('dashboard');
+  const [activeTab, setActiveTab] = useState<'dashboard' | 'unifier' | 'pitch' | 'report' | 'users'>('dashboard');
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
   const [sosRequests, setSosRequests] = useState<SOSTicket[]>(INITIAL_SOS_TICKETS);
   const [dispatchingId, setDispatchingId] = useState<number | null>(null);
@@ -76,14 +79,18 @@ function App() {
   // Check login session on mount
   useEffect(() => {
     const loggedUser = localStorage.getItem('floodpulse_active_user');
-    if (loggedUser) {
+    const loggedEmail = localStorage.getItem('floodpulse_active_email');
+    if (loggedUser && loggedEmail) {
       setUser(loggedUser);
+      setUserEmail(loggedEmail);
     }
   }, []);
 
-  const handleLoginSuccess = (name: string) => {
+  const handleLoginSuccess = (name: string, email: string) => {
     setUser(name);
+    setUserEmail(email);
     localStorage.setItem('floodpulse_active_user', name);
+    localStorage.setItem('floodpulse_active_email', email);
     confetti({
       particleCount: 80,
       spread: 60,
@@ -93,8 +100,12 @@ function App() {
 
   const handleLogout = () => {
     setUser(null);
+    setUserEmail('');
     localStorage.removeItem('floodpulse_active_user');
+    localStorage.removeItem('floodpulse_active_email');
   };
+
+  const isAdmin = userEmail === 'admin@floodpulse.in';
 
   // Add new parsed SOS from SiloUnifier
   const handleParsedSOS = (newSOS: {
@@ -233,6 +244,14 @@ function App() {
           >
             Proposal Report
           </button>
+          {isAdmin && (
+            <button
+              onClick={() => setActiveTab('users')}
+              className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
+            >
+              <Users size={16} /> Analyst Registry
+            </button>
+          )}
         </nav>
 
         {/* Profile info */}
@@ -454,12 +473,26 @@ function App() {
 
                         {ticket.status === 'PENDING' ? (
                           <button
-                            onClick={() => handleDispatch(ticket.id)}
-                            className="btn-primary"
-                            style={{ padding: '8px 12px', fontSize: '0.75rem', width: '100%', background: 'var(--gradient-primary)' }}
+                            onClick={() => {
+                              if (!isAdmin) {
+                                alert("Security Notice: Analyst profile does not hold database writing credentials. Please log in as an administrator to dispatch active vessels.");
+                                return;
+                              }
+                              handleDispatch(ticket.id);
+                            }}
+                            className={isAdmin ? "btn-primary" : "btn-secondary"}
+                            style={{
+                              padding: '8px 12px',
+                              fontSize: '0.75rem',
+                              width: '100%',
+                              background: isAdmin ? 'var(--gradient-primary)' : 'rgba(255,255,255,0.02)',
+                              color: isAdmin ? 'white' : '#64748B',
+                              cursor: isAdmin ? 'pointer' : 'not-allowed',
+                              border: isAdmin ? 'none' : '1px dashed rgba(255,255,255,0.1)'
+                            }}
                             disabled={dispatchingId !== null}
                           >
-                            Assign Nearest NGO Boat
+                            {isAdmin ? 'Assign Nearest NGO Boat' : 'Assign Boat (Admin Only)'}
                           </button>
                         ) : ticket.status === 'DISPATCHING' ? (
                           <div style={{
@@ -509,7 +542,7 @@ function App() {
         )}
 
         {activeTab === 'unifier' && (
-          <SiloUnifier onParsedSOS={handleParsedSOS} />
+          <SiloUnifier isAdmin={isAdmin} onParsedSOS={handleParsedSOS} />
         )}
 
         {activeTab === 'pitch' && (
@@ -518,6 +551,10 @@ function App() {
 
         {activeTab === 'report' && (
           <ProposalReport />
+        )}
+
+        {activeTab === 'users' && isAdmin && (
+          <UserDirectory currentUserEmail={userEmail} />
         )}
 
       </main>

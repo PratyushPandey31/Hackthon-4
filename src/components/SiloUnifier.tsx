@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Database, Cpu, Check, MessageSquare, AlertCircle } from 'lucide-react';
 
 interface SiloUnifierProps {
+  isAdmin: boolean;
   onParsedSOS: (sos: {
     location: string;
     details: string;
@@ -29,7 +30,7 @@ const SAMPLE_MESSAGES = [
   }
 ];
 
-export const SiloUnifier: React.FC<SiloUnifierProps> = ({ onParsedSOS }) => {
+export const SiloUnifier: React.FC<SiloUnifierProps> = ({ isAdmin, onParsedSOS }) => {
   const [activeSubTab, setActiveSubTab] = useState<'unifier' | 'bmc' | 'railways' | 'ngo'>('unifier');
   const [inputText, setInputText] = useState('');
   const [isParsing, setIsParsing] = useState(false);
@@ -269,8 +270,24 @@ export const SiloUnifier: React.FC<SiloUnifierProps> = ({ onParsedSOS }) => {
                       </div>
                     </div>
 
-                    <button onClick={handleMerge} className="btn-primary" style={{ width: '100%', background: 'var(--gradient-success)' }}>
-                      Merge to Global SOS Queue
+                    <button
+                      onClick={() => {
+                        if (!isAdmin) {
+                          alert("Security Notice: Analyst profile does not hold database writing credentials. Please log in as an administrator to merge silo feeds.");
+                          return;
+                        }
+                        handleMerge();
+                      }}
+                      className={isAdmin ? "btn-primary" : "btn-secondary"}
+                      style={{
+                        width: '100%',
+                        background: isAdmin ? 'var(--gradient-success)' : 'rgba(255,255,255,0.02)',
+                        color: isAdmin ? 'white' : '#64748B',
+                        cursor: isAdmin ? 'pointer' : 'not-allowed',
+                        border: isAdmin ? 'none' : '1px dashed rgba(255,255,255,0.1)'
+                      }}
+                    >
+                      {isAdmin ? 'Merge to Global SOS Queue' : 'Merge Queue (Admin Only)'}
                     </button>
                   </div>
                 ) : (

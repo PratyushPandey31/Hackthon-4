@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Lock, Mail, User, ArrowRight, Eye, EyeOff } from 'lucide-react';
 
 interface AuthPortalProps {
-  onLoginSuccess: (name: string) => void;
+  onLoginSuccess: (name: string, email: string) => void;
 }
 
 export const RadarLogo: React.FC<{ size?: number; className?: string }> = ({ size = 64, className = "" }) => {
@@ -73,9 +73,9 @@ export const AuthPortal: React.FC<AuthPortalProps> = ({ onLoginSuccess }) => {
         const user = storedUsers.find((u: any) => u.email === email && u.password === password);
         
         if (email === 'admin@floodpulse.in' && password === 'admin123') {
-          onLoginSuccess('Pratyush Pandey');
+          onLoginSuccess('Pratyush Pandey', 'admin@floodpulse.in');
         } else if (user) {
-          onLoginSuccess(user.name);
+          onLoginSuccess(user.name, user.email);
         } else {
           setError('Invalid email or password. Use demo credentials or register.');
           setLoading(false);
@@ -270,7 +270,7 @@ export const AuthPortal: React.FC<AuthPortalProps> = ({ onLoginSuccess }) => {
               onClick={() => {
                 setEmail('admin@floodpulse.in');
                 setPassword('admin123');
-                onLoginSuccess('Pratyush Pandey');
+                onLoginSuccess('Pratyush Pandey', 'admin@floodpulse.in');
               }}
               className="btn-secondary"
               style={{
