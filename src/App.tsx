@@ -102,11 +102,15 @@ function App() {
   const [dispatchingId, setDispatchingId] = useState<number | null>(null);
   const [crisisLevel, setCrisisLevel] = useState<'NORMAL' | 'DRILL' | 'RED_ALERT'>('NORMAL');
   const [logLevelFilter, setLogLevelFilter] = useState<string>('ALL');
+  const [scanProgress, setScanProgress] = useState<number>(35);
+  const [scanningSector, setScanningSector] = useState<string>('WARD L (Kurla)');
 
   const [systemLogs, setSystemLogs] = useState<string[]>([
-    `[${new Date().toLocaleDateString()}] 14:05:22 - NGO dispatch vessels synced. 6 crews placed on standby.`,
-    `[${new Date().toLocaleDateString()}] 14:02:18 - Systems Integrity Check passed. 22 GIS wards loaded offline.`,
-    `[${new Date().toLocaleDateString()}] 14:02:15 - Active Commander admin@floodpulse.in logged in from secure terminal node.`
+    `[INFO] [${new Date().toLocaleDateString()} 14:05:22] - NGO dispatch vessels synced. 6 crews placed on standby.`,
+    `[INFO] [${new Date().toLocaleDateString()} 14:02:18] - Systems Integrity Check passed. 22 GIS wards loaded offline.`,
+    `[INFO] [${new Date().toLocaleDateString()} 14:02:15] - Active Commander admin@floodpulse.in logged in from secure terminal node.`,
+    `[CRITICAL] [${new Date().toLocaleDateString()} 13:58:45] - Level check: Kurla L-Ward water logging rose to 4.5 feet.`,
+    `[WARNING] [${new Date().toLocaleDateString()} 13:45:00] - Hindmata drainage efficiency decreased due to backflow.`
   ]);
 
   const [broadcastAlerts, setBroadcastAlerts] = useState<any[]>([
@@ -115,9 +119,18 @@ function App() {
     { id: 3, time: '14:02', type: 'INFO', text: 'Sluice drainage gates at Love Grove active at 100% efficiency.' }
   ]);
 
-  const addSystemLog = (msg: string) => {
+  const addSystemLog = (msg: string, level = 'INFO') => {
     const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-    setSystemLogs(prev => [`[${new Date().toLocaleDateString()} ${time}] - ${msg}`, ...prev]);
+    let finalLevel = level;
+    const lowerMsg = msg.toLowerCase();
+    if (lowerMsg.includes('flood') || lowerMsg.includes('critical') || lowerMsg.includes('danger') || lowerMsg.includes('red_alert')) {
+      finalLevel = 'CRITICAL';
+    } else if (lowerMsg.includes('warning') || lowerMsg.includes('alert') || lowerMsg.includes('warn') || lowerMsg.includes('limit')) {
+      finalLevel = 'WARNING';
+    } else if (lowerMsg.includes('dispatch') || lowerMsg.includes('vessel') || lowerMsg.includes('boat')) {
+      finalLevel = 'DISPATCH';
+    }
+    setSystemLogs(prev => [`[${finalLevel}] [${new Date().toLocaleDateString()} ${time}] - ${msg}`, ...prev]);
   };
 
   const getRainfallStatus = (val: number) => {
@@ -157,6 +170,30 @@ function App() {
     return () => {
       document.removeEventListener('click', handleGlobalClick);
     };
+  }, []);
+
+  // Live Doppler scanning simulation loop
+  useEffect(() => {
+    const sectors = [
+      'WARD L (Kurla)', 'WARD G/S (Dadar)', 'WARD F/N (Sion)', 'WARD H/W (Bandra)', 
+      'WARD K/W (Andheri)', 'WARD A (Colaba)', 'WARD P/N (Malad)', 'WARD G/N (Dharavi)',
+      'WARD E (Byculla)', 'WARD M/W (Chembur)', 'WARD H/E (Santacruz)', 'WARD N (Ghatkopar)'
+    ];
+    
+    const interval = setInterval(() => {
+      setScanProgress(prev => {
+        if (prev >= 100) {
+          const nextSector = sectors[Math.floor(Math.random() * sectors.length)];
+          setScanningSector(nextSector);
+          // Let's add the system log using the correct helper
+          addSystemLog(`Systems telemetry sweep complete for ${nextSector}. Integrity status: SECURE.`, 'INFO');
+          return 0;
+        }
+        return prev + 10;
+      });
+    }, 1200);
+
+    return () => clearInterval(interval);
   }, []);
 
   const handleLoginSuccess = (name: string, email: string) => {
@@ -1235,6 +1272,20 @@ function App() {
               </div>
             </div>
 
+            {/* Live Doppler Scan Ticker HUD */}
+            <div style={{ background: 'rgba(0, 245, 212, 0.03)', border: '1px solid rgba(0, 245, 212, 0.12)', borderRadius: '6px', padding: '12px', marginBottom: '16px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>📡 ACTIVE MET-RADAR SWEEP: WARD INTEGRITY ANALYSIS</span>
+                <span style={{ color: 'white', fontWeight: 600 }}>SCANNING: <span style={{ color: 'var(--accent-yellow)' }}>{scanningSector}</span></span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div style={{ flex: 1, height: '8px', background: 'rgba(255,255,255,0.05)', borderRadius: '4px', overflow: 'hidden' }}>
+                  <div style={{ width: `${scanProgress}%`, height: '100%', background: 'var(--gradient-primary)', transition: 'width 0.3s ease' }} />
+                </div>
+                <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'var(--accent-cyan)', minWidth: '35px', textAlign: 'right' }}>{scanProgress}%</span>
+              </div>
+            </div>
+
             {/* ASCII System Art */}
             <div style={{ background: '#02050D', border: '1px solid rgba(52, 211, 153, 0.1)', borderRadius: '6px', padding: '12px', fontFamily: 'monospace', fontSize: '0.65rem', color: '#10B981', marginBottom: '16px', opacity: 0.8 }}>
               <pre style={{ margin: 0 }}>
@@ -1276,12 +1327,49 @@ function App() {
                   if (!filterInput || !filterInput.value) return true;
                   return log.toLowerCase().includes(filterInput.value.toLowerCase());
                 })
-                .map((logLine, idx) => (
-                  <div key={idx} style={{ borderBottom: '1px dashed rgba(52, 211, 153, 0.03)', paddingBottom: '4px', display: 'flex', gap: '8px' }}>
-                    <span style={{ color: 'rgba(52, 211, 153, 0.4)' }}>[SYS_AUDIT]</span>
-                    <span>{logLine}</span>
-                  </div>
-                ))}
+                .map((logLine, idx) => {
+                  let badgeColor = 'rgba(52, 211, 153, 0.1)';
+                  let textColor = 'var(--accent-green)';
+                  let label = 'INFO';
+                  let restOfLine = logLine;
+
+                  if (logLine.startsWith('[')) {
+                    const match = logLine.match(/^\[(.*?)\] (.*)$/);
+                    if (match) {
+                      label = match[1];
+                      restOfLine = match[2];
+                      if (label === 'CRITICAL') {
+                        badgeColor = 'rgba(239, 68, 68, 0.15)';
+                        textColor = 'var(--accent-red)';
+                      } else if (label === 'WARNING') {
+                        badgeColor = 'rgba(245, 158, 11, 0.15)';
+                        textColor = 'var(--accent-yellow)';
+                      } else if (label === 'DISPATCH') {
+                        badgeColor = 'rgba(0, 210, 255, 0.15)';
+                        textColor = 'var(--accent-blue)';
+                      }
+                    }
+                  }
+
+                  return (
+                    <div key={idx} style={{ borderBottom: '1px dashed rgba(255, 255, 255, 0.02)', paddingBottom: '6px', display: 'flex', gap: '10px', alignItems: 'center' }}>
+                      <span style={{ 
+                        fontSize: '0.6rem', 
+                        fontWeight: 700, 
+                        padding: '2px 6px', 
+                        borderRadius: '4px', 
+                        background: badgeColor, 
+                        color: textColor, 
+                        fontFamily: 'monospace',
+                        minWidth: '70px',
+                        textAlign: 'center'
+                      }}>
+                        {label}
+                      </span>
+                      <span style={{ color: label === 'CRITICAL' ? '#EF4444' : label === 'WARNING' ? '#FBBF24' : '#E2E8F0', flex: 1 }}>{restOfLine}</span>
+                    </div>
+                  );
+                })}
             </div>
           </div>
         )}
