@@ -16,189 +16,168 @@ export const PitchDeck: React.FC = () => {
 
   const slides = [
     {
-      title: "FLOODPULSE MUMBAI",
-      subtitle: "Unified Predictive Flood Command & Emergency Dispatch Portal",
-      tagline: "Solving the Urban Flood Response Blindspot • Ideathon 2026",
+      title: "FLOODPULSE MUMBAI — PITCH DECK",
+      subtitle: "Unified Predictive Flood Command, Ingestion Silo & Emergency Dispatch Center",
+      tagline: "Solving the Urban Flood Response Blindspot • The Blueprint Ideathon 2026",
       icon: <Presentation size={48} style={{ color: 'var(--accent-cyan)' }} />,
       content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '24px', alignItems: 'center', height: '100%', justifyContent: 'center', position: 'relative' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', alignItems: 'center', height: '100%', justifyContent: 'center', position: 'relative' }}>
           
-          {/* Glowing Radar scan grid background */}
-          <div style={{ position: 'absolute', width: '260px', height: '260px', borderRadius: '50%', border: '1px solid rgba(0, 245, 212, 0.1)', background: 'radial-gradient(circle, rgba(0, 245, 212, 0.03) 0%, transparent 70%)', zIndex: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', animation: 'pulse-ring 3s infinite' }}>
-            <div style={{ width: '180px', height: '180px', borderRadius: '50%', border: '1.5px dashed rgba(0, 245, 212, 0.15)', animation: 'logo-rotate 20s linear infinite' }} />
-          </div>
-
           <div className="glass-panel" style={{
-            padding: '32px 40px',
+            padding: '24px 32px',
             background: 'linear-gradient(135deg, rgba(0, 210, 255, 0.08) 0%, rgba(157, 78, 221, 0.08) 100%)',
             borderColor: 'rgba(0, 210, 255, 0.25)',
-            maxWidth: '650px',
+            maxWidth: '750px',
             textAlign: 'center',
             zIndex: 1,
-            boxShadow: '0 8px 32px 0 rgba(0, 210, 255, 0.05), inset 0 0 16px rgba(0, 245, 212, 0.05)'
+            boxShadow: '0 8px 32px 0 rgba(0, 210, 255, 0.05)'
           }}>
-            <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '12px' }}>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '3px 10px', borderRadius: '12px', background: 'rgba(0, 245, 212, 0.12)', color: 'var(--accent-cyan)' }}>OFFICIAL PROPOSAL</span>
-              <span style={{ fontSize: '0.75rem', fontWeight: 800, padding: '3px 10px', borderRadius: '12px', background: 'rgba(157, 78, 221, 0.12)', color: 'var(--accent-purple)' }}>IDEATHON 2026</span>
+            <div style={{ display: 'flex', justifyContent: 'center', gap: '6px', marginBottom: '10px' }}>
+              <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '2px 8px', borderRadius: '12px', background: 'rgba(0, 245, 212, 0.12)', color: 'var(--accent-cyan)' }}>OFFICIAL SUBMISSION</span>
+              <span style={{ fontSize: '0.7rem', fontWeight: 800, padding: '2px 8px', borderRadius: '12px', background: 'rgba(157, 78, 221, 0.12)', color: 'var(--accent-purple)' }}>IDEATHON 2026</span>
             </div>
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'white', marginBottom: '12px', letterSpacing: '-0.01em' }}>
-              UNIFYING FRAGMENTED DISASTER DATASETS
+            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'white', marginBottom: '8px', letterSpacing: '-0.01em' }}>
+              UNIFYING MUNICIPAL, RAILWAYS, & CITIZEN DISTRESS DATA
             </h3>
-            <p style={{ color: '#E2E8F0', fontSize: '0.95rem', lineHeight: '1.6' }}>
-              Designed to break administrative, transit, and volunteer information silos to enable predictive, real-time dispatch of emergency assets during Mumbai monsoons.
+            <p style={{ color: '#E2E8F0', fontSize: '0.85rem', lineHeight: '1.5' }}>
+              A next-generation emergency dashboard built to eliminate communications lag, extract stranded citizen locations using NLP parsers, and trigger preemptive NGO rescue boat dispatches.
             </p>
           </div>
           
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', width: '100%', maxWidth: '700px', marginTop: '16px', zIndex: 1 }}>
-            <div style={{ textAlign: 'center', background: 'rgba(4, 7, 18, 0.4)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ fontSize: '0.8rem', color: '#64748B' }}>Organizing Guild</div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', marginTop: '4px' }}>Rotaract Club of TCET</div>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', width: '100%', maxWidth: '750px', zIndex: 1, textAlign: 'left' }}>
+            <div className="glass-panel" style={{ padding: '14px', background: 'rgba(4, 7, 18, 0.4)' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-red)', marginBottom: '4px' }}>1. KYU (WHY)</div>
+              <p style={{ fontSize: '0.7rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+                Mumbai monsoons flood critical transit tracks and low-income slums. Isolated municipal telemetry cells lead to delayed reactive rescue actions.
+              </p>
             </div>
-            <div style={{ textAlign: 'center', background: 'rgba(4, 7, 18, 0.4)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ fontSize: '0.8rem', color: '#64748B' }}>Core Theme Focus</div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', marginTop: '4px' }}>Smart Cities & Social Impact</div>
+            <div className="glass-panel" style={{ padding: '14px', background: 'rgba(4, 7, 18, 0.4)' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-purple)', marginBottom: '4px' }}>2. KYA (WHAT)</div>
+              <p style={{ fontSize: '0.7rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+                A glassmorphic command room combining GIS maps with holographic sector overlays, active Doppler sweeps, shelter logs, and custom dialer hotlines.
+              </p>
             </div>
-            <div style={{ textAlign: 'center', background: 'rgba(4, 7, 18, 0.4)', padding: '16px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.05)' }}>
-              <div style={{ fontSize: '0.8rem', color: '#64748B' }}>Lead Developer</div>
-              <div style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--accent-cyan)', marginTop: '4px' }}>Pratyush Pandey</div>
+            <div className="glass-panel" style={{ padding: '14px', background: 'rgba(4, 7, 18, 0.4)' }}>
+              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-cyan)', marginBottom: '4px' }}>3. KAISE (HOW)</div>
+              <p style={{ fontSize: '0.7rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+                Utilizing React 19 + TypeScript on lightweight SVG coordinates. Incorporates structured regex parser templates to convert chat data into dispatches.
+              </p>
             </div>
           </div>
         </div>
       )
     },
     {
-      title: "1. THE MONSOON CRISIS SILO BLINDSPOT",
-      subtitle: "Fragmented Telemetry Feeds & Reactive Emergency Dispatch",
-      tagline: "Critical information roadblocks causing response delays during heavy downpours",
+      title: "1. THE PROBLEM: MONSOON INUNDATION SILOS (KYU)",
+      subtitle: "Why Isolated Operations Centers Cause Delayed Rescue Dispatches",
+      tagline: "Fragmented datasets and manual coordination halts local train networks and stranded residents",
       icon: <ShieldAlert size={48} style={{ color: 'var(--accent-red)' }} />,
       content: (
-        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '32px', height: '100%', alignItems: 'center' }}>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', textAlign: 'left' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 0.8fr', gap: '24px', height: '100%', alignItems: 'center' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
             
-            {/* Visual Vector Node Diagram */}
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', background: 'rgba(239, 68, 68, 0.03)', border: '1px solid rgba(239, 68, 68, 0.1)', borderRadius: '8px', padding: '16px', marginBottom: '10px' }}>
-              <div style={{ fontSize: '0.75rem', fontWeight: 800, color: 'var(--accent-red)', fontFamily: 'monospace', marginBottom: '6px' }}>DISCONNECTED INFRASTRUCTURE NODES:</div>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px' }}>
-                <span style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.02)', border: '1px dashed #EF4444', borderRadius: '4px', fontSize: '0.75rem', color: '#EF4444' }}>BMC TELEMETRY</span>
-                <span style={{ color: '#EF4444', fontWeight: 'bold' }}>✕ NO CONNECTIVITY ✕</span>
-                <span style={{ padding: '6px 12px', background: 'rgba(255,255,255,0.02)', border: '1px dashed #EF4444', borderRadius: '4px', fontSize: '0.75rem', color: '#EF4444' }}>NGO RESCUE BOATS</span>
-              </div>
-            </div>
-
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <div style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--accent-red)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.75rem', flexShrink: 0, marginTop: '2px' }}>1</div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+              <div style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--accent-red)', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.7rem', flexShrink: 0, marginTop: '2px' }}>1</div>
               <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', margin: 0 }}>Data Segregation</h4>
-                <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '4px', lineHeight: '1.4' }}>
-                  BMC tide sensors, Central Railway track logs, and NGO logistics spreadsheets remain isolated. There is no unified schema.
+                <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', margin: 0 }}>Disconnected Telemetry Systems</h4>
+                <p style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '2px', lineHeight: '1.4' }}>
+                  BMC precipitation trackers, coastal tide calendars, and railway submergence indices reside on isolated servers. Emergency teams operate without shared forecasting tools.
                 </p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <div style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--accent-red)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.75rem', flexShrink: 0, marginTop: '2px' }}>2</div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+              <div style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--accent-red)', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.7rem', flexShrink: 0, marginTop: '2px' }}>2</div>
               <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', margin: 0 }}>Reactive Operations</h4>
-                <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '4px', lineHeight: '1.4' }}>
-                  Emergency services react only after tracks and slums submerge. There is no joint forecasting model incorporating tide calendars.
+                <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', margin: 0 }}>Stranded Transit Halts</h4>
+                <p style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '2px', lineHeight: '1.4' }}>
+                  Commuters are stranded on central railway lines because track water accumulation levels are recorded manually, preventing early speed limits or route diversions.
                 </p>
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'flex-start' }}>
-              <div style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--accent-red)', borderRadius: '50%', width: '22px', height: '22px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.75rem', flexShrink: 0, marginTop: '2px' }}>3</div>
+            <div style={{ display: 'flex', gap: '10px', alignItems: 'flex-start' }}>
+              <div style={{ background: 'rgba(239,68,68,0.15)', color: 'var(--accent-red)', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 800, fontSize: '0.7rem', flexShrink: 0, marginTop: '2px' }}>3</div>
               <div>
-                <h4 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', margin: 0 }}>Lost Citizen SOS Chats</h4>
-                <p style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '4px', lineHeight: '1.4' }}>
-                  Low-income residents in high-risk zones (like Kurla or Malad slums) post emergency calls in raw chat files that fail to reach central dispatchers.
+                <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', margin: 0 }}>Stranded Slum Residents Left in Silence</h4>
+                <p style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '2px', lineHeight: '1.4' }}>
+                  Families trapped in low-elevation waterlogged pockets (e.g. Kurla slums) post coordinate details in unstructured volunteer chats, which are ignored by official systems.
                 </p>
               </div>
             </div>
           </div>
           
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div className="glass-panel" style={{ padding: '20px', background: 'rgba(239,68,68,0.03)', borderColor: 'rgba(239,68,68,0.25)', textAlign: 'left', boxShadow: 'inset 0 0 10px rgba(239,68,68,0.05)' }}>
-              <div style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--accent-red)', textTransform: 'uppercase', marginBottom: '8px', letterSpacing: '0.05em' }}>TACTICAL EXPOSURE INDEX</div>
-              <div style={{ fontSize: '1.8rem', fontWeight: 800, color: 'white', display: 'flex', alignItems: 'baseline', gap: '4px' }}>
-                3.5 <span style={{ fontSize: '1rem', color: '#64748B' }}>Hours</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            <div className="glass-panel" style={{ padding: '16px', background: 'rgba(239,68,68,0.03)', borderColor: 'rgba(239,68,68,0.25)', textAlign: 'left' }}>
+              <div style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent-red)', marginBottom: '4px' }}>DISPATCH LATENCY BLOCK:</div>
+              <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white' }}>
+                3.5 Hours
               </div>
-              <div style={{ fontSize: '0.8rem', color: '#94A3B8', marginTop: '2px', marginBottom: '14px' }}>Average delay in localized municipal rescue dispatch</div>
-              <div style={{ borderTop: '1px solid rgba(255,255,255,0.05)', paddingTop: '12px' }}>
-                <span style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 'bold' }}>MONSOON IMPACT:</span>
-                <p style={{ fontSize: '0.8rem', color: 'white', fontWeight: 500, marginTop: '4px', lineHeight: '1.4' }}>
-                  Stranded local transit trains, flooded subway underpasses, and stranded elderly residents locked out from immediate coordination.
-                </p>
-              </div>
+              <p style={{ fontSize: '0.75rem', color: '#94A3B8', marginTop: '4px', lineHeight: '1.3', margin: 0 }}>
+                Average delay between sub-ward submergences and emergency rescue vessel routing, resulting in high asset dispatch errors.
+              </p>
             </div>
           </div>
         </div>
       )
     },
     {
-      title: "2. THE SOLUTION: FLOODPULSE INTEGRATED PORTAL",
-      subtitle: "GIS Telemetry Command, Predictive Simulation & NLP Ingestion",
-      tagline: "One central command console merging municipal APIs, railway feeds, and citizen SOS queues",
+      title: "2. THE INNOVATION: UNIFIED COMMAND CENTER (KYA)",
+      subtitle: "Consolidating Fragmented Databases into a Single Glassmorphic HUD",
+      tagline: "A production-ready React SPA coordinating telemetry metrics, shelter occupancies, and NLP data silos",
       icon: <Sparkles size={48} style={{ color: 'var(--accent-cyan)' }} />,
       content: (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', height: '100%', justifyContent: 'center' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px', height: '100%' }}>
           
-          {/* Flowchart Schematic */}
-          <div style={{ background: '#030712', border: '1px solid rgba(0, 245, 212, 0.1)', borderRadius: '8px', padding: '16px 24px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.75rem', fontFamily: 'monospace', position: 'relative' }}>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', zIndex: 1 }}>
-                <span style={{ padding: '6px 10px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '4px', color: '#94A3B8' }}>BMC TELEMETRY API</span>
-                <span style={{ padding: '6px 10px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '4px', color: '#94A3B8' }}>RAILWAY TRANSIT NET</span>
-                <span style={{ padding: '6px 10px', background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.08)', borderRadius: '4px', color: '#94A3B8' }}>UNSTRUCTURED CHATS (NLP)</span>
-              </div>
-              
-              {/* Laser connecting lines */}
-              <div style={{ flex: 1, height: '2px', background: 'linear-gradient(90deg, rgba(0, 245, 212, 0) 0%, rgba(0, 245, 212, 0.8) 50%, rgba(0, 245, 212, 0) 100%)', margin: '0 20px', position: 'relative', overflow: 'hidden' }}>
-                <div style={{ width: '40px', height: '100%', background: '#FFF', filter: 'blur(2px)', position: 'absolute', animation: 'scan-sweep 2s linear infinite' }} />
-              </div>
-
-              <div style={{ padding: '16px', background: 'rgba(0, 245, 212, 0.05)', border: '1.5px solid var(--accent-cyan)', borderRadius: '8px', zIndex: 1, boxShadow: '0 0 15px rgba(0, 245, 212, 0.2)' }}>
-                <span style={{ color: 'white', fontWeight: 'bold', fontSize: '0.8rem', display: 'block', marginBottom: '2px' }}>FLOODPULSE CONTROL CORE</span>
-                <span style={{ color: 'var(--accent-cyan)', fontWeight: 800, fontSize: '0.65rem' }}>ACTIVE DISPATCH MODEL</span>
-              </div>
-            </div>
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '16px', textAlign: 'left' }}>
-            <div className="glass-panel" style={{ padding: '16px', background: 'rgba(4, 7, 18, 0.3)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                <Compass size={18} style={{ color: 'var(--accent-blue)' }} />
-                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', margin: 0 }}>Unified GIS Map</h4>
-              </div>
-              <p style={{ fontSize: '0.75rem', color: '#94A3B8', lineHeight: '1.4', margin: 0 }}>
-                High-fidelity, vector-based interactive map displaying live submergence depths, active rescue vessels, and population indices.
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
+            <div className="glass-panel" style={{ padding: '14px', background: 'rgba(0, 210, 255, 0.02)' }}>
+              <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Compass size={14} style={{ color: 'var(--accent-cyan)' }} />
+                Offline-First GIS Map & HUD
+              </h4>
+              <p style={{ fontSize: '0.75rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+                SVG-vector maps of peninsular wards showing localized flood depths. Clicks launch holographic panels detailing ward elevation models and direct dispatch triggers.
               </p>
             </div>
 
-            <div className="glass-panel" style={{ padding: '16px', background: 'rgba(4, 7, 18, 0.3)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                <Cpu size={18} style={{ color: 'var(--accent-purple)' }} />
-                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', margin: 0 }}>Predictive AI Engine</h4>
-              </div>
-              <p style={{ fontSize: '0.75rem', color: '#94A3B8', lineHeight: '1.4', margin: 0 }}>
-                Calculates real-time inundation hazard values by correlating precipitation volumes, tide curves, and drainage efficiency parameters.
-              </p>
-            </div>
-
-            <div className="glass-panel" style={{ padding: '16px', background: 'rgba(4, 7, 18, 0.3)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '8px' }}>
-                <CheckCircle size={18} style={{ color: 'var(--accent-cyan)' }} />
-                <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: 'white', margin: 0 }}>Silo Integration NLP</h4>
-              </div>
-              <p style={{ fontSize: '0.75rem', color: '#94A3B8', lineHeight: '1.4', margin: 0 }}>
-                Automatically parses unstructured chat feeds, extracts coordinates and contacts, and generates structured rescue tasks.
+            <div className="glass-panel" style={{ padding: '14px', background: 'rgba(157, 78, 221, 0.02)' }}>
+              <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Cpu size={14} style={{ color: 'var(--accent-purple)' }} />
+                AI Submergence Simulator
+              </h4>
+              <p style={{ fontSize: '0.75rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+                Admin parameters to simulate tide heights and precipitation rates to forecast inundations. Automatically links to railway networks to suspend train routes.
               </p>
             </div>
           </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', textAlign: 'left' }}>
+            <div className="glass-panel" style={{ padding: '14px', background: 'rgba(16, 185, 129, 0.02)' }}>
+              <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <CheckCircle size={14} style={{ color: 'var(--accent-green)' }} />
+                Evacuation Shelters Status Board
+              </h4>
+              <p style={{ fontSize: '0.75rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+                Real-time tracking of shelters bed occupancy, volunteer availability, and zone hazard alerts, with built-in quick dial hotline connections.
+              </p>
+            </div>
+
+            <div className="glass-panel" style={{ padding: '14px', background: 'rgba(0, 245, 212, 0.02)' }}>
+              <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', margin: '0 0 4px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <Timer size={14} style={{ color: 'var(--accent-cyan)' }} />
+                NLP Silo Parser Ingestion
+              </h4>
+              <p style={{ fontSize: '0.75rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+                Regex unifier console that parses unstructured volunteer texts (location, contacts, victim counts) and appends them to dispatch stacks instantly.
+              </p>
+            </div>
+          </div>
+
         </div>
       )
     },
     {
-      title: "3. INTERACTIVE IMPACT SIMULATOR (JUDGES EYE)",
+      title: "3. INTERACTIVE IMPACT SIMULATOR (KYA)",
       subtitle: "Drag the Slider to Simulate Rescue Dispatch Efficiency Gain",
       tagline: "Test in real-time how immediate predictive coordination saves lives and cuts transit halts",
       icon: <Award size={48} style={{ color: 'var(--accent-green)' }} />,
@@ -279,7 +258,50 @@ export const PitchDeck: React.FC = () => {
       )
     },
     {
-      title: "4. ROADMAP & SCALE HORIZONS",
+      title: "4. THE DISPATCH WORKFLOW: STEP-BY-STEP (KAISE)",
+      subtitle: "How the Emergency Commander Coordinates Rescue Operations",
+      tagline: "Visual validation pipelines ensuring zero dispatch error rates",
+      icon: <Cpu style={{ color: 'var(--accent-purple)' }} size={48} />,
+      content: (
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', textAlign: 'left', height: '100%', alignItems: 'center' }}>
+          
+          <div className="glass-panel" style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent-cyan)' }}>STEP 1: INGEST</span>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', margin: 0 }}>API Telemetry Ingestion</h4>
+            <p style={{ fontSize: '0.7rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+              Commanders review rainfall graphs and tide gauges. Railways indicators automatically detect network status alerts.
+            </p>
+          </div>
+
+          <div className="glass-panel" style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent-purple)' }}>STEP 2: EXTRACT</span>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', margin: 0 }}>NLP Silo Unification</h4>
+            <p style={{ fontSize: '0.7rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+              Volunteer WhatsApp reports are processed. Structured locations, trapped counts, and telephone numbers are extracted instantly.
+            </p>
+          </div>
+
+          <div className="glass-panel" style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent-green)' }}>STEP 3: TARGET</span>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', margin: 0 }}>Doppler Scan Target</h4>
+            <p style={{ fontSize: '0.7rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+              Commanders click GIS Wards to load local HUD overlays. Clicking 'Radar Scan' locks Doppler sweeps on critical coordinates.
+            </p>
+          </div>
+
+          <div className="glass-panel" style={{ padding: '16px', height: '100%', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+            <span style={{ fontSize: '0.65rem', fontWeight: 800, color: 'var(--accent-red)' }}>STEP 4: ROUTE</span>
+            <h4 style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white', margin: 0 }}>Preemptive Dispatch</h4>
+            <p style={{ fontSize: '0.7rem', color: '#94A3B8', margin: 0, lineHeight: '1.3' }}>
+              NGO boats are dispatched with one click. Direct call buttons allow controllers to dial citizens in distress and guide them to open shelters.
+            </p>
+          </div>
+
+        </div>
+      )
+    },
+    {
+      title: "5. ROADMAP & SCALE HORIZONS",
       subtitle: "Transitioning to Closed-Loop Automated Infrastructure Actions",
       tagline: "The three-phase deployment plan built for metropolitan expansions",
       icon: <TrendingUp size={48} style={{ color: 'var(--accent-cyan)' }} />,
