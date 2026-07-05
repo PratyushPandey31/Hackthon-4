@@ -101,6 +101,7 @@ function App() {
   const [sosRequests, setSosRequests] = useState<SOSTicket[]>(INITIAL_SOS_TICKETS);
   const [dispatchingId, setDispatchingId] = useState<number | null>(null);
   const [crisisLevel, setCrisisLevel] = useState<'NORMAL' | 'DRILL' | 'RED_ALERT'>('NORMAL');
+  const [logLevelFilter, setLogLevelFilter] = useState<string>('ALL');
 
   const [systemLogs, setSystemLogs] = useState<string[]>([
     `[${new Date().toLocaleDateString()}] 14:05:22 - NGO dispatch vessels synced. 6 crews placed on standby.`,
@@ -1166,28 +1167,68 @@ function App() {
         {activeTab === 'logs' && (
           <div className="glass-panel" style={{ padding: '24px', textAlign: 'left', display: 'flex', flexDirection: 'column', height: '560px' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'white', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#34D399', animation: 'pulse 1s infinite' }} />
-                Real-Time Diagnostics Console
-              </h2>
-              <div style={{ display: 'flex', gap: '8px' }}>
+              <div>
+                <h2 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'white', margin: 0, display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{ display: 'inline-block', width: '8px', height: '8px', borderRadius: '50%', background: '#34D399', animation: 'pulse 1s infinite' }} />
+                  Real-Time Diagnostics Console
+                </h2>
+                <span style={{ fontSize: '0.65rem', color: '#64748B', fontFamily: 'monospace', display: 'block', marginTop: '2px' }}>
+                  LOG INGESTION: ACTIVE | LATENCY: 4ms | AUDIT DB STATUS: SYNCED
+                </span>
+              </div>
+              <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+                <select
+                  value={logLevelFilter}
+                  onChange={(e) => setLogLevelFilter(e.target.value)}
+                  className="input-field"
+                  style={{ padding: '4px 10px', fontSize: '0.75rem', width: '120px', cursor: 'pointer', height: '32px' }}
+                >
+                  <option value="ALL">ALL LEVELS</option>
+                  <option value="INFO">INFO</option>
+                  <option value="WARN">WARNING</option>
+                  <option value="CRITICAL">CRITICAL</option>
+                  <option value="VESSEL">DISPATCH</option>
+                </select>
+
                 <input
                   id="logs-filter-input"
                   type="text"
-                  placeholder="Filter logs by keyword..."
+                  placeholder="Filter by keyword..."
                   className="input-field"
-                  style={{ padding: '4px 10px', fontSize: '0.75rem', width: '180px' }}
+                  style={{ padding: '4px 10px', fontSize: '0.75rem', width: '150px', height: '32px' }}
                   onChange={() => {
                     // Triggers state re-render
                     setSystemLogs(prev => [...prev]);
                   }}
                 />
+
+                <button
+                  onClick={() => {
+                    const content = systemLogs.join('\n');
+                    const blob = new Blob([content], { type: 'text/plain' });
+                    const url = URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = `floodpulse_system_audit_${new Date().toISOString().split('T')[0]}.txt`;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    URL.revokeObjectURL(url);
+                    addSystemLog('Exported system audit logs to text report.');
+                    alert('Diagnostics Audit Report extracted and downloaded successfully!');
+                  }}
+                  className="btn-primary"
+                  style={{ padding: '0 14px', fontSize: '0.7rem', height: '32px', border: 'none', background: 'var(--gradient-primary)' }}
+                >
+                  Extract Report
+                </button>
+
                 <button
                   onClick={() => {
                     setSystemLogs([`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}] - Console diagnostics database flushed.`]);
                   }}
                   className="btn-secondary"
-                  style={{ padding: '4px 12px', fontSize: '0.7rem' }}
+                  style={{ padding: '0 12px', fontSize: '0.7rem', height: '32px' }}
                 >
                   Flush Console
                 </button>
@@ -1223,6 +1264,14 @@ function App() {
             }}>
               {systemLogs
                 .filter(log => {
+                  // Severity Filter
+                  if (logLevelFilter !== 'ALL') {
+                    if (logLevelFilter === 'VESSEL' && !log.toLowerCase().includes('vessel')) return false;
+                    if (logLevelFilter === 'INFO' && !log.toLowerCase().includes('info') && !log.toLowerCase().includes('sync') && !log.toLowerCase().includes('check')) return false;
+                    if (logLevelFilter === 'WARN' && !log.toLowerCase().includes('warning') && !log.toLowerCase().includes('warn')) return false;
+                    if (logLevelFilter === 'CRITICAL' && !log.toLowerCase().includes('critical') && !log.toLowerCase().includes('red_alert')) return false;
+                  }
+                  
                   const filterInput = document.getElementById('logs-filter-input') as HTMLInputElement;
                   if (!filterInput || !filterInput.value) return true;
                   return log.toLowerCase().includes(filterInput.value.toLowerCase());
