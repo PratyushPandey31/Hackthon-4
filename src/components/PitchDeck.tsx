@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Presentation, CheckCircle, ShieldAlert, Cpu, Sparkles, TrendingUp, Compass, Play, Pause, Timer, Award } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Presentation, CheckCircle, ShieldAlert, Cpu, Sparkles, TrendingUp, Compass, Play, Pause, Timer, Award, Printer } from 'lucide-react';
 
 export const PitchDeck: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -341,116 +341,152 @@ export const PitchDeck: React.FC = () => {
   ];
 
   return (
-    <div className="glass-panel" style={{ padding: '32px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '620px', position: 'relative', overflow: 'hidden' }}>
-      
-      {/* Slide Progress Indicator */}
-      <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.04)', position: 'absolute', top: 0, left: 0, overflow: 'hidden' }}>
-        <div style={{ height: '100%', width: `${((currentSlide + 1) / slides.length) * 100}%`, background: 'var(--gradient-primary)', transition: 'width 0.4s ease-out' }} />
-      </div>
-
-      {/* Slide Header */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-light)', paddingBottom: '20px', marginBottom: '20px', marginTop: '4px' }}>
-        <div>
-          <h2 style={{
-            fontSize: '1.6rem',
-            fontWeight: 800,
-            background: 'linear-gradient(135deg, #FFF 30%, #94A3B8 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            marginBottom: '4px'
-          }}>
-            {slides[currentSlide].title}
-          </h2>
-          <p style={{ color: 'var(--accent-cyan)', fontSize: '0.95rem', fontWeight: 600 }}>
-            {slides[currentSlide].subtitle}
-          </p>
+    <>
+      <div className="glass-panel no-print" style={{ padding: '32px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '620px', position: 'relative', overflow: 'hidden' }}>
+        
+        {/* Slide Progress Indicator */}
+        <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.04)', position: 'absolute', top: 0, left: 0, overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${((currentSlide + 1) / slides.length) * 100}%`, background: 'var(--gradient-primary)', transition: 'width 0.4s ease-out' }} />
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          {slides[currentSlide].icon}
-        </div>
-      </div>
 
-      {/* Slide Content */}
-      <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '10px 0' }}>
-        {slides[currentSlide].content}
-      </div>
-
-      {/* Slide Footer */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '20px', marginTop: '20px' }}>
-        <span style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <span>Slide {currentSlide + 1} of {slides.length}</span>
-          <span>•</span>
-          <span style={{ fontStyle: 'italic' }}>{slides[currentSlide].tagline}</span>
-        </span>
-
-        {/* Navigation Controls */}
-        <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-          {/* Autoplay Slideshow */}
-          <button
-            onClick={() => setIsPlaying(prev => !prev)}
-            className="btn-secondary"
-            style={{ 
-              padding: '8px 14px', 
-              borderRadius: '6px', 
-              display: 'flex', 
-              alignItems: 'center', 
-              gap: '6px', 
-              fontSize: '0.75rem', 
-              borderColor: isPlaying ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.08)', 
-              color: isPlaying ? 'var(--accent-cyan)' : '#E2E8F0',
-              height: '34px'
-            }}
-          >
-            {isPlaying ? <Pause size={14} /> : <Play size={14} />}
-            <span>{isPlaying ? 'PAUSE AUTO' : 'PLAY DECK'}</span>
-          </button>
-
-          <button
-            onClick={() => {
-              setCurrentSlide(prev => Math.max(0, prev - 1));
-              setIsPlaying(false);
-            }}
-            className="btn-secondary"
-            disabled={currentSlide === 0}
-            style={{ padding: '8px 12px', borderRadius: '6px', height: '34px' }}
-          >
-            <ChevronLeft size={18} />
-          </button>
-          
-          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-            {slides.map((_, index) => (
-              <span
-                key={index}
-                onClick={() => {
-                  setCurrentSlide(index);
-                  setIsPlaying(false);
-                }}
-                style={{
-                  width: index === currentSlide ? '18px' : '8px',
-                  height: '8px',
-                  borderRadius: '4px',
-                  background: index === currentSlide ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.1)',
-                  cursor: 'pointer',
-                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                  boxShadow: index === currentSlide ? '0 0 8px rgba(0, 245, 212, 0.4)' : 'none'
-                }}
-              />
-            ))}
+        {/* Slide Header */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-light)', paddingBottom: '20px', marginBottom: '20px', marginTop: '4px' }}>
+          <div>
+            <h2 style={{
+              fontSize: '1.6rem',
+              fontWeight: 800,
+              background: 'linear-gradient(135deg, #FFF 30%, #94A3B8 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              marginBottom: '4px'
+            }}>
+              {slides[currentSlide].title}
+            </h2>
+            <p style={{ color: 'var(--accent-cyan)', fontSize: '0.95rem', fontWeight: 600 }}>
+              {slides[currentSlide].subtitle}
+            </p>
           </div>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {slides[currentSlide].icon}
+          </div>
+        </div>
 
-          <button
-            onClick={() => {
-              setCurrentSlide(prev => Math.min(slides.length - 1, prev + 1));
-              setIsPlaying(false);
-            }}
-            className="btn-secondary"
-            disabled={currentSlide === slides.length - 1}
-            style={{ padding: '8px 12px', borderRadius: '6px', height: '34px' }}
-          >
-            <ChevronRight size={18} />
-          </button>
+        {/* Slide Content */}
+        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', padding: '10px 0' }}>
+          {slides[currentSlide].content}
+        </div>
+
+        {/* Slide Footer */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '20px', marginTop: '20px' }}>
+          <span style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <span>Slide {currentSlide + 1} of {slides.length}</span>
+            <span>•</span>
+            <span style={{ fontStyle: 'italic' }}>{slides[currentSlide].tagline}</span>
+          </span>
+
+          {/* Navigation Controls */}
+          <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            {/* Export Slides PDF */}
+            <button
+              onClick={() => window.print()}
+              className="btn-secondary"
+              style={{ 
+                padding: '8px 14px', 
+                borderRadius: '6px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '6px', 
+                fontSize: '0.75rem', 
+                borderColor: 'rgba(0, 245, 212, 0.25)', 
+                color: 'var(--accent-cyan)',
+                height: '34px',
+                cursor: 'pointer'
+              }}
+            >
+              <Printer size={14} />
+              <span>Export PDF</span>
+            </button>
+
+            {/* Autoplay Slideshow */}
+            <button
+              onClick={() => setIsPlaying(prev => !prev)}
+              className="btn-secondary"
+              style={{ 
+                padding: '8px 14px', 
+                borderRadius: '6px', 
+                display: 'flex', 
+                alignItems: 'center', 
+                gap: '6px', 
+                fontSize: '0.75rem', 
+                borderColor: isPlaying ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.08)', 
+                color: isPlaying ? 'var(--accent-cyan)' : '#E2E8F0',
+                height: '34px'
+              }}
+            >
+              {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+              <span>{isPlaying ? 'PAUSE AUTO' : 'PLAY DECK'}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                setCurrentSlide(prev => Math.max(0, prev - 1));
+                setIsPlaying(false);
+              }}
+              className="btn-secondary"
+              disabled={currentSlide === 0}
+              style={{ padding: '8px 12px', borderRadius: '6px', height: '34px' }}
+            >
+              <ChevronLeft size={18} />
+            </button>
+            
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              {slides.map((_, index) => (
+                <span
+                  key={index}
+                  onClick={() => {
+                    setCurrentSlide(index);
+                    setIsPlaying(false);
+                  }}
+                  style={{
+                    width: index === currentSlide ? '18px' : '8px',
+                    height: '8px',
+                    borderRadius: '4px',
+                    background: index === currentSlide ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.1)',
+                    cursor: 'pointer',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                    boxShadow: index === currentSlide ? '0 0 8px rgba(0, 245, 212, 0.4)' : 'none'
+                  }}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => {
+                setCurrentSlide(prev => Math.min(slides.length - 1, prev + 1));
+                setIsPlaying(false);
+              }}
+              className="btn-secondary"
+              disabled={currentSlide === slides.length - 1}
+              style={{ padding: '8px 12px', borderRadius: '6px', height: '34px' }}
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
         </div>
       </div>
-    </div>
+
+      {/* Print-Only Slides representation */}
+      <div className="print-only">
+        {slides.map((s, idx) => (
+          <div key={idx} className="print-slide">
+            <h1 style={{ fontSize: '2.2rem', fontWeight: 800, marginBottom: '6px', color: 'var(--accent-cyan)', textAlign: 'left' }}>{s.title}</h1>
+            <h2 style={{ fontSize: '1.25rem', marginBottom: '32px', color: '#94A3B8', textAlign: 'left' }}>{s.subtitle}</h2>
+            <div style={{ width: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+              {s.content}
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 };

@@ -409,3 +409,34 @@ input[type="range"].slider-tide::-webkit-slider-thumb {
     display: none !important;
   }
 }
+
+.print-only {
+  display: none;
+}
+
+@media print {
+  body, html {
+    background: #030712 !important;
+    color: white !important;
+    height: auto !important;
+  }
+  header, main, footer, .no-print, .stats-grid, .dashboard-grid {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  .print-slide {
+    page-break-after: always;
+    break-after: page;
+    min-height: 100vh;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    padding: 60px !important;
+    box-sizing: border-box !important;
+    background: #030712 !important;
+    color: white !important;
+    border: none !important;
+  }
+}
