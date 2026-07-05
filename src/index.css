@@ -212,16 +212,15 @@ body {
   border-color: rgba(255, 255, 255, 0.15);
 }
 
-/* Tab buttons */
 .tab-btn {
-  padding: 10px 18px;
+  padding: 8px 16px;
   background: transparent;
-  border: none;
+  border: 1px solid transparent;
   color: #94A3B8;
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   cursor: pointer;
-  border-radius: 8px;
+  border-radius: 20px;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -230,14 +229,13 @@ body {
 
 .tab-btn:hover {
   color: white;
-  background: rgba(255, 255, 255, 0.05);
 }
 
 .tab-btn.active {
-  color: white;
-  background: rgba(0, 210, 255, 0.15);
-  border: 1px solid rgba(0, 210, 255, 0.3);
-  box-shadow: 0 0 12px rgba(0, 210, 255, 0.1);
+  color: #00D2FF !important;
+  background: rgba(0, 210, 255, 0.05) !important;
+  border: 1px solid rgba(0, 210, 255, 0.5) !important;
+  box-shadow: 0 0 10px rgba(0, 210, 255, 0.3) !important;
 }
 
 /* Custom Scrollbars */
@@ -283,6 +281,23 @@ input[type="range"]::-webkit-slider-thumb {
 
 input[type="range"]::-webkit-slider-thumb:hover {
   transform: scale(1.2);
+}
+
+/* Custom slider tracks with gradients matching mockup */
+input[type="range"].slider-rainfall {
+  background: linear-gradient(to right, #00D2FF, #FBBF24) !important;
+}
+input[type="range"].slider-rainfall::-webkit-slider-thumb {
+  background: #FBBF24 !important;
+  box-shadow: 0 0 10px #FBBF24 !important;
+}
+
+input[type="range"].slider-tide {
+  background: linear-gradient(to right, #00D2FF, #EF4444) !important;
+}
+input[type="range"].slider-tide::-webkit-slider-thumb {
+  background: #EF4444 !important;
+  box-shadow: 0 0 10px #EF4444 !important;
 }
 
 /* Badge styles */

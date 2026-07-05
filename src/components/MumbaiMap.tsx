@@ -22,74 +22,224 @@ interface MumbaiMapProps {
 
 const WARDS: WardData[] = [
   {
-    id: 'borivali',
-    name: 'Borivali (R-Central)',
-    elevation: 9.0,
+    id: 'ab_north',
+    name: 'A/B (North)',
+    elevation: 8.5,
     vulnerability: 0.15,
-    populationDensity: 'High (26,000/km²)',
+    populationDensity: 'High (24,000/km²)',
     activeBoats: 1,
-    svgPath: 'M 100 20 L 220 15 L 230 70 L 110 80 Z',
-    centerText: { x: 165, y: 48 }
+    svgPath: 'M 60 40 L 110 30 L 115 80 L 70 90 Z',
+    centerText: { x: 88, y: 65 }
   },
   {
-    id: 'kandivali',
-    name: 'Kandivali (R-South)',
-    elevation: 7.5,
-    vulnerability: 0.25,
-    populationDensity: 'Very High (32,000/km²)',
+    id: 'malad',
+    name: 'Malad',
+    elevation: 7.0,
+    vulnerability: 0.20,
+    populationDensity: 'High (28,000/km²)',
     activeBoats: 2,
-    svgPath: 'M 110 80 L 230 70 L 240 140 L 95 130 Z',
-    centerText: { x: 165, y: 105 }
+    svgPath: 'M 110 30 L 160 35 L 155 90 L 115 80 Z',
+    centerText: { x: 135, y: 60 }
+  },
+  {
+    id: 'e_ward',
+    name: 'E-Ward',
+    elevation: 9.0,
+    vulnerability: 0.12,
+    populationDensity: 'Medium (19,000/km²)',
+    activeBoats: 1,
+    svgPath: 'M 160 35 L 195 45 L 205 100 L 155 90 Z',
+    centerText: { x: 178, y: 70 }
+  },
+  {
+    id: 'gn_ward',
+    name: 'G/N (Dharavi)',
+    elevation: 2.2,
+    vulnerability: 0.90,
+    populationDensity: 'Extremely High (68,000/km²)',
+    activeBoats: 6,
+    svgPath: 'M 195 45 L 255 70 L 245 130 L 205 100 Z',
+    centerText: { x: 228, y: 90 }
+  },
+  {
+    id: 'me_ward',
+    name: 'M/E (Govandi)',
+    elevation: 3.8,
+    vulnerability: 0.65,
+    populationDensity: 'Very High (35,000/km²)',
+    activeBoats: 4,
+    svgPath: 'M 245 130 L 270 170 L 245 285 L 210 260 L 225 185 Z',
+    centerText: { x: 242, y: 200 }
+  },
+  {
+    id: 'hw_ward',
+    name: 'H/W (Bandra W)',
+    elevation: 5.5,
+    vulnerability: 0.30,
+    populationDensity: 'High (27,000/km²)',
+    activeBoats: 2,
+    svgPath: 'M 70 90 L 115 80 L 125 150 L 60 140 Z',
+    centerText: { x: 92, y: 120 }
   },
   {
     id: 'andheri',
-    name: 'Andheri (K-West)',
+    name: 'Andheri',
     elevation: 3.5,
-    vulnerability: 0.60,
-    populationDensity: 'Extremely High (45,000/km²)',
-    activeBoats: 4,
-    svgPath: 'M 95 130 L 240 140 L 220 220 L 80 200 Z',
-    centerText: { x: 160, y: 175 }
+    vulnerability: 0.55,
+    populationDensity: 'Extremely High (42,000/km²)',
+    activeBoats: 5,
+    svgPath: 'M 60 140 L 125 150 L 120 220 L 75 220 Z',
+    centerText: { x: 95, y: 185 }
   },
   {
-    id: 'kurla',
-    name: 'Kurla (L-Ward)',
-    elevation: 1.5,
-    vulnerability: 0.95,
-    populationDensity: 'Extremely High (58,000/km²)',
-    activeBoats: 8,
-    svgPath: 'M 190 220 L 270 210 L 280 320 L 165 310 Z',
-    centerText: { x: 220, y: 265 }
+    id: 'c_ward',
+    name: 'C-Ward',
+    elevation: 4.8,
+    vulnerability: 0.40,
+    populationDensity: 'High (31,000/km²)',
+    activeBoats: 2,
+    svgPath: 'M 125 150 L 180 155 L 180 230 L 120 220 Z',
+    centerText: { x: 150, y: 190 }
+  },
+  {
+    id: 'fs_ward',
+    name: 'F/S (Parel)',
+    elevation: 4.0,
+    vulnerability: 0.45,
+    populationDensity: 'High (29,000/km²)',
+    activeBoats: 3,
+    svgPath: 'M 180 155 L 225 185 L 210 260 L 175 250 Z',
+    centerText: { x: 202, y: 215 }
   },
   {
     id: 'bandra',
-    name: 'Bandra (H-West)',
-    elevation: 5.0,
-    vulnerability: 0.35,
+    name: 'Bandra',
+    elevation: 3.2,
+    vulnerability: 0.60,
+    populationDensity: 'Very High (33,000/km²)',
+    activeBoats: 4,
+    svgPath: 'M 75 220 L 120 220 L 115 295 L 75 295 Z',
+    centerText: { x: 98, y: 260 }
+  },
+  {
+    id: 'gs_ward',
+    name: 'G/S',
+    elevation: 2.8,
+    vulnerability: 0.70,
+    populationDensity: 'Very High (36,000/km²)',
+    activeBoats: 3,
+    svgPath: 'M 120 220 L 145 225 L 140 280 L 115 280 Z',
+    centerText: { x: 132, y: 250 }
+  },
+  {
+    id: 'ls_ward',
+    name: 'L/S (Kurla)',
+    elevation: 1.5,
+    vulnerability: 0.95,
+    populationDensity: 'Extremely High (56,000/km²)',
+    activeBoats: 8,
+    svgPath: 'M 180 230 L 210 260 L 190 315 L 160 305 Z',
+    centerText: { x: 185, y: 270 }
+  },
+  {
+    id: 'n_ward',
+    name: 'N-Ward',
+    elevation: 3.0,
+    vulnerability: 0.50,
     populationDensity: 'High (28,000/km²)',
     activeBoats: 3,
-    svgPath: 'M 80 200 L 220 220 L 165 310 L 90 300 Z',
-    centerText: { x: 145, y: 255 }
+    svgPath: 'M 115 280 L 140 280 L 135 345 L 110 335 Z',
+    centerText: { x: 122, y: 312 }
+  },
+  {
+    id: 'kw_ward',
+    name: 'K/W',
+    elevation: 4.5,
+    vulnerability: 0.40,
+    populationDensity: 'High (30,000/km²)',
+    activeBoats: 2,
+    svgPath: 'M 145 225 L 180 230 L 160 305 L 140 280 Z',
+    centerText: { x: 156, y: 260 }
+  },
+  {
+    id: 'ke_ward',
+    name: 'K/E',
+    elevation: 5.0,
+    vulnerability: 0.35,
+    populationDensity: 'High (29,000/km²)',
+    activeBoats: 2,
+    svgPath: 'M 210 260 L 245 285 L 220 350 L 190 315 Z',
+    centerText: { x: 216, y: 310 }
+  },
+  {
+    id: 'rc_ward',
+    name: 'R/C',
+    elevation: 5.2,
+    vulnerability: 0.25,
+    populationDensity: 'Medium (21,000/km²)',
+    activeBoats: 1,
+    svgPath: 'M 220 350 L 260 375 L 220 440 L 195 400 Z',
+    centerText: { x: 222, y: 395 }
+  },
+  {
+    id: 'ps_ward',
+    name: 'P/S',
+    elevation: 4.2,
+    vulnerability: 0.40,
+    populationDensity: 'High (27,000/km²)',
+    activeBoats: 2,
+    svgPath: 'M 190 315 L 220 350 L 195 400 L 165 375 Z',
+    centerText: { x: 192, y: 360 }
   },
   {
     id: 'dadar',
-    name: 'Dadar (G-North)',
-    elevation: 4.0,
-    vulnerability: 0.50,
-    populationDensity: 'High (34,000/km²)',
+    name: 'Dadar',
+    elevation: 2.5,
+    vulnerability: 0.80,
+    populationDensity: 'Extremely High (48,000/km²)',
+    activeBoats: 4,
+    svgPath: 'M 75 295 L 115 295 L 110 370 L 80 365 Z',
+    centerText: { x: 95, y: 335 }
+  },
+  {
+    id: 'd_ward',
+    name: 'D-Ward',
+    elevation: 3.4,
+    vulnerability: 0.60,
+    populationDensity: 'Very High (38,000/km²)',
     activeBoats: 3,
-    svgPath: 'M 90 300 L 165 310 L 140 400 L 85 390 Z',
-    centerText: { x: 120, y: 350 }
+    svgPath: 'M 115 295 L 165 305 L 140 400 L 110 370 Z',
+    centerText: { x: 132, y: 345 }
+  },
+  {
+    id: 'ab_south',
+    name: 'A/B (South)',
+    elevation: 4.8,
+    vulnerability: 0.35,
+    populationDensity: 'High (26,000/km²)',
+    activeBoats: 1,
+    svgPath: 'M 80 365 L 110 370 L 105 450 L 75 425 Z',
+    centerText: { x: 92, y: 405 }
+  },
+  {
+    id: 'byculla',
+    name: 'Byculla',
+    elevation: 2.0,
+    vulnerability: 0.85,
+    populationDensity: 'Very High (39,000/km²)',
+    activeBoats: 3,
+    svgPath: 'M 110 370 L 140 400 L 130 465 L 105 450 Z',
+    centerText: { x: 122, y: 420 }
   },
   {
     id: 'colaba',
-    name: 'Colaba (A-Ward)',
-    elevation: 6.0,
-    vulnerability: 0.20,
-    populationDensity: 'Moderate (18,000/km²)',
-    activeBoats: 1,
-    svgPath: 'M 85 390 L 140 400 L 120 480 L 70 510 L 55 450 Z',
-    centerText: { x: 95, y: 445 }
+    name: 'Colaba',
+    elevation: 5.0,
+    vulnerability: 0.30,
+    populationDensity: 'Moderate (17,000/km²)',
+    activeBoats: 2,
+    svgPath: 'M 75 425 L 105 450 L 130 465 L 110 540 L 75 480 Z',
+    centerText: { x: 100, y: 490 }
   }
 ];
 
@@ -153,7 +303,7 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
       <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Compass className="logo-rotate" style={{ color: 'var(--accent-cyan)' }} size={20} />
-          <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Geographical Submergence GIS Map</h2>
+          <h2 style={{ fontSize: '1.1rem', fontWeight: 700 }}>Mumbai Peninsula Wards Flood Status</h2>
         </div>
         <div style={{ display: 'flex', gap: '12px', fontSize: '0.75rem' }}>
           <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
@@ -268,6 +418,16 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
             <text x="275" y="320" fill="rgba(0, 210, 255, 0.12)" fontSize="9" fontWeight="700" letterSpacing="0.15em" transform="rotate(90 275 320)" pointerEvents="none">THANE CREEK</text>
             <text x="45" y="490" fill="rgba(255, 255, 255, 0.08)" fontSize="8" fontWeight="600" letterSpacing="0.05em" pointerEvents="none">BACK BAY</text>
             <text x="180" y="475" fill="rgba(255, 255, 255, 0.08)" fontSize="8" fontWeight="600" letterSpacing="0.05em" pointerEvents="none">HARBOUR BAY</text>
+
+            {/* Tactical Street Overlays for Topography detail */}
+            <g opacity="0.15" stroke="#00D2FF" strokeWidth="0.8" fill="none" pointerEvents="none">
+              <path d="M 85 30 Q 110 120 100 240 T 95 380 T 90 480" />
+              <path d="M 180 40 Q 190 140 185 240 T 130 380 T 110 460" />
+              <path d="M 65 95 Q 120 120 180 100" />
+              <path d="M 75 185 Q 125 210 220 190" />
+              <path d="M 80 295 Q 130 305 180 300" />
+              <path d="M 90 395 L 140 400" />
+            </g>
 
             {/* SVG Wards */}
             {WARDS.map((ward) => {

@@ -12,17 +12,14 @@ import {
   AlertTriangle,
   Train,
   Settings,
-  RefreshCw,
-  Check,
-  MapPin,
-  Phone,
-  Users
+  Clock
 } from 'lucide-react';
 import { UserDirectory } from './components/UserDirectory';
 import confetti from 'canvas-confetti';
 
 interface SOSTicket {
   id: number;
+  time: string;
   location: string;
   details: string;
   level: 'CRITICAL' | 'WARNING' | 'ALERT';
@@ -36,31 +33,58 @@ interface SOSTicket {
 const INITIAL_SOS_TICKETS: SOSTicket[] = [
   {
     id: 1,
-    location: 'Kurla (L-Ward)',
-    details: 'Water level entered ground floors. 8 senior citizens stranded in Kranti Nagar. Require immediate evacuation boat.',
+    time: '14:15',
+    location: 'WARD G/S (Dadar)',
+    details: 'Residential flood (Elderly stranded)',
     level: 'CRITICAL',
-    contact: '+91 98765 43210',
-    victimCount: 8,
+    contact: '+91 98200 11223',
+    victimCount: 5,
     status: 'PENDING'
   },
   {
     id: 2,
-    location: 'Dadar (G-North)',
-    details: 'Hindmata junction water logging at 2.2ft. Heavy drainage overflow. Local traffic diverted.',
-    level: 'WARNING',
-    contact: '+91 99887 76655',
+    time: '14:12',
+    location: 'WARD K/W (Andheri)',
+    details: 'Metro station inundation',
+    level: 'CRITICAL',
+    contact: '+91 98200 44556',
     victimCount: 0,
+    status: 'DISPATCHED',
+    eta: 'Completed',
+    boatId: 'TCET-BOAT-01'
+  },
+  {
+    id: 3,
+    time: '14:09',
+    location: 'WARD D (Grant Rd)',
+    details: 'Building wall collapse (3 injured)',
+    level: 'CRITICAL',
+    contact: '+91 98200 77889',
+    victimCount: 3,
     status: 'DISPATCHED',
     eta: 'Completed',
     boatId: 'TCET-BOAT-02'
   },
   {
-    id: 3,
-    location: 'Andheri (K-West)',
-    details: 'Andheri Subway flooded up to 3.5ft. Two vehicles stuck. Police present. Need support to drain water.',
+    id: 4,
+    time: '14:05',
+    location: 'WARD M/E (Govandi)',
+    details: 'Road blockage (Heavy rain)',
+    level: 'WARNING',
+    contact: '+91 98100 12345',
+    victimCount: 0,
+    status: 'DISPATCHED',
+    eta: 'Completed',
+    boatId: 'TCET-BOAT-03'
+  },
+  {
+    id: 5,
+    time: '14:02',
+    location: 'WARD H/E (Santacruz)',
+    details: 'Slum area flooding (Evac needed)',
     level: 'CRITICAL',
-    contact: '+91 91234 56789',
-    victimCount: 2,
+    contact: '+91 98100 67890',
+    victimCount: 15,
     status: 'PENDING'
   }
 ];
@@ -70,12 +94,25 @@ function App() {
   const [userEmail, setUserEmail] = useState<string>('');
   const [rainfall, setRainfall] = useState(45); // mm/hr
   const [tide, setTide] = useState(2.8); // meters
-  const [drainage, setDrainage] = useState(75); // efficiency %
+  const [drainage] = useState(75); // efficiency %
   const [activeTab, setActiveTab] = useState<'dashboard' | 'unifier' | 'pitch' | 'report' | 'users'>('dashboard');
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
   const [sosRequests, setSosRequests] = useState<SOSTicket[]>(INITIAL_SOS_TICKETS);
   const [dispatchingId, setDispatchingId] = useState<number | null>(null);
   const [crisisLevel, setCrisisLevel] = useState<'NORMAL' | 'DRILL' | 'RED_ALERT'>('NORMAL');
+
+  const getRainfallStatus = (val: number) => {
+    if (val < 15) return { text: 'LIGHT DRIZZLE', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' };
+    if (val < 60) return { text: 'MODERATE RAIN', color: '#00D2FF', bg: 'rgba(0,210,255,0.1)', border: 'rgba(0,210,255,0.3)' };
+    if (val < 110) return { text: 'HEAVY RAIN', color: '#FBBF24', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)' };
+    return { text: 'CLOUDBURST ALERT', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' };
+  };
+
+  const getTideStatus = (val: number) => {
+    if (val < 3.2) return { text: 'NORMAL TIDE', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' };
+    if (val < 4.5) return { text: 'HIGH TIDE ALERT', color: '#FBBF24', bg: 'rgba(245,158,11,0.1)', border: 'rgba(245,158,11,0.3)' };
+    return { text: 'HIGH TIDE WARNING', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' };
+  };
 
   // Check login session on mount
   useEffect(() => {
@@ -118,6 +155,7 @@ function App() {
   }) => {
     const ticket: SOSTicket = {
       id: Date.now(),
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
       location: newSOS.location,
       details: newSOS.details,
       level: newSOS.level,
@@ -240,33 +278,49 @@ function App() {
             <h1 style={{
               fontSize: '1.2rem',
               fontWeight: 800,
-              background: 'var(--gradient-primary)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.025em'
+              color: 'white',
+              letterSpacing: '-0.015em',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              margin: 0
             }}>
-              FLOODPULSE MUMBAI
+              <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>FLOODPULSE MUMBAI</span>
+              <span style={{ color: 'rgba(255,255,255,0.2)', fontWeight: 300 }}>|</span>
+              <span style={{ fontSize: '1.05rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.02em' }}>COMMAND CENTER</span>
             </h1>
-            <span style={{ fontSize: '0.65rem', color: '#64748B', display: 'block', fontWeight: 600, marginTop: '-2px' }}>
-              REAL-TIME DISASTER CONTROL
-            </span>
           </div>
         </div>
 
         {/* Tab switcher */}
-        <nav style={{ display: 'flex', gap: '8px' }}>
+        <nav style={{ display: 'flex', gap: '4px', overflowX: 'auto', maxWidth: '60%' }}>
           <button
             onClick={() => setActiveTab('dashboard')}
             className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
           >
-            <Radio size={16} /> Operations Room
+            Operations Room {activeTab === 'dashboard' && <span style={{ fontSize: '0.65rem', color: '#00F5D4', marginLeft: '4px', fontWeight: 700 }}>(Active)</span>}
           </button>
+          
           <button
             onClick={() => setActiveTab('unifier')}
             className={`tab-btn ${activeTab === 'unifier' ? 'active' : ''}`}
           >
             Data Silo Unifier
           </button>
+
+          {/* Mockup tabs */}
+          {['Resources', 'Weather', 'Alerts', 'Logs', 'Analytics'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => alert(`Operational Telemetry: The '${tab}' telemetry logs are actively feeding into the primary command matrix.`)}
+              className="tab-btn"
+              style={{ color: 'rgba(255,255,255,0.4)' }}
+            >
+              {tab}
+            </button>
+          ))}
+
+          {/* Extra tabs for PDF/PPT documentation */}
           <button
             onClick={() => setActiveTab('pitch')}
             className={`tab-btn ${activeTab === 'pitch' ? 'active' : ''}`}
@@ -284,10 +338,30 @@ function App() {
               onClick={() => setActiveTab('users')}
               className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
             >
-              <Users size={16} /> Analyst Registry
+              Analyst Registry
             </button>
           )}
         </nav>
+
+        {/* Glowing Telemetry Wave Graphic from Mockup */}
+        <svg width="120" height="32" viewBox="0 0 120 32" style={{ opacity: 0.85, pointerEvents: 'none', marginLeft: 'auto', marginRight: '16px' }} className="desktop-only">
+          <defs>
+            <linearGradient id="headerWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+              <stop offset="0%" stopColor="#00D2FF" />
+              <stop offset="50%" stopColor="#9D4EDD" />
+              <stop offset="100%" stopColor="#FF007A" />
+            </linearGradient>
+            <filter id="headerWaveGlow">
+              <feGaussianBlur stdDeviation="1.5" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <path d="M 0 25 Q 20 8 40 20 T 80 12 T 120 18" fill="none" stroke="url(#headerWaveGrad)" strokeWidth="2.2" strokeLinecap="round" filter="url(#headerWaveGlow)" />
+          <path d="M 0 16 Q 30 28 60 12 T 120 22" fill="none" stroke="rgba(0, 210, 255, 0.25)" strokeWidth="0.8" strokeDasharray="3,3" />
+        </svg>
 
         {/* Profile info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
@@ -409,215 +483,209 @@ function App() {
               {/* Controls and SOS queue */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 
-                {/* AI Simulation Control Panel */}
-                {/* AI Simulation / Telemetry Status Panel based on Role */}
+                {/* ENVIRONMENTAL CONTROLS */}
                 {isAdmin ? (
                   <div className="glass-panel" style={{ padding: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                      <Settings style={{ color: 'var(--accent-cyan)' }} size={18} />
-                      <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>AI Submergence Simulator</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Settings style={{ color: 'var(--accent-cyan)' }} size={18} />
+                        <h3 style={{ fontSize: '0.95rem', fontWeight: 800, letterSpacing: '0.05em' }}>ENVIRONMENTAL CONTROLS</h3>
+                      </div>
+                      <span style={{ color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}>•••</span>
                     </div>
 
-                    <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '16px', textAlign: 'left' }}>
-                      Adjust real-time rainfall levels, high tide tables, and drainage blockages to recalculate inundation risk on the map.
-                    </p>
-
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '20px', textAlign: 'left' }}>
+                      {/* Rainfall Intensity Slider */}
                       <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
-                          <span>Rainfall Intensity</span>
-                          <span style={{ color: 'var(--accent-blue)' }}>{rainfall} mm/hr</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
+                          <span style={{ color: '#E2E8F0' }}>Rainfall Intensity (mm/hr)</span>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                            <span style={{ color: 'white', fontWeight: 700 }}>{rainfall} mm/hr</span>
+                            <span style={{
+                              padding: '2px 8px',
+                              fontSize: '0.6rem',
+                              fontWeight: 700,
+                              borderRadius: '4px',
+                              background: getRainfallStatus(rainfall).bg,
+                              color: getRainfallStatus(rainfall).color,
+                              border: `1px solid ${getRainfallStatus(rainfall).border}`
+                            }}>
+                              {getRainfallStatus(rainfall).text.split(' ')[0]}
+                            </span>
+                          </div>
                         </div>
                         <input
                           type="range"
                           min="0"
-                          max="150"
+                          max="250"
                           value={rainfall}
                           onChange={(e) => setRainfall(parseInt(e.target.value))}
+                          className="slider-rainfall"
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
-                          <span>Drizzle (0mm)</span>
-                          <span>Cloudburst (150mm)</span>
+                          <span>Range: 0-250</span>
+                          <span>Status: <span style={{ color: getRainfallStatus(rainfall).color, fontWeight: 600 }}>{getRainfallStatus(rainfall).text}</span></span>
                         </div>
                       </div>
 
+                      {/* Tide Height Slider */}
                       <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
-                          <span>High Tide Height</span>
-                          <span style={{ color: 'var(--accent-purple)' }}>{tide} meters</span>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
+                          <span style={{ color: '#E2E8F0' }}>Tide Height (Meters)</span>
+                          <span style={{ color: 'white', fontWeight: 700 }}>{tide} M</span>
                         </div>
                         <input
                           type="range"
-                          min="1.0"
-                          max="6.0"
+                          min="0.0"
+                          max="6.5"
                           step="0.1"
                           value={tide}
                           onChange={(e) => setTide(parseFloat(e.target.value))}
+                          className="slider-tide"
                         />
                         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
-                          <span>Low Tide (1.0m)</span>
-                          <span>Extreme Surge (6.0m)</span>
-                        </div>
-                      </div>
-
-                      <div>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
-                          <span>Drainage Efficiency</span>
-                          <span style={{ color: drainage < 50 ? 'var(--accent-red)' : 'var(--accent-green)' }}>{drainage}%</span>
-                        </div>
-                        <input
-                          type="range"
-                          min="0"
-                          max="100"
-                          value={drainage}
-                          onChange={(e) => setDrainage(parseInt(e.target.value))}
-                        />
-                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
-                          <span>Blocked (0%)</span>
-                          <span>Clear Channels (100%)</span>
+                          <span>Range: 0.0-6.5</span>
+                          <span>Status: <span style={{ color: getTideStatus(tide).color, fontWeight: 600 }}>{getTideStatus(tide).text}</span></span>
                         </div>
                       </div>
                     </div>
                   </div>
                 ) : (
                   <div className="glass-panel" style={{ padding: '20px' }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                      <Radio style={{ color: 'var(--accent-green)', animation: 'pulse-ring 2s infinite' }} size={18} />
-                      <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Telemetry Sensor Status</h3>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Radio style={{ color: 'var(--accent-green)', animation: 'pulse-ring 2s infinite' }} size={18} />
+                        <h3 style={{ fontSize: '0.95rem', fontWeight: 800, letterSpacing: '0.05em' }}>ENVIRONMENTAL TELEMETRY</h3>
+                      </div>
+                      <span style={{ color: 'rgba(255,255,255,0.3)', fontSize: '1rem' }}>•••</span>
                     </div>
-                    <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '16px', textAlign: 'left' }}>
-                      Read-only real-time metrics parsed from Municipal Rain Gauges and creek level gauges.
-                    </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
-                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
-                        <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Precipitation telemetry</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-blue)', marginTop: '2px' }}>{rainfall} mm/hr</div>
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Precipitation Telemetry</div>
+                          <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-blue)', marginTop: '2px' }}>{rainfall} mm/hr</div>
+                        </div>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', background: getRainfallStatus(rainfall).bg, color: getRainfallStatus(rainfall).color }}>{getRainfallStatus(rainfall).text}</span>
                       </div>
-                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
-                        <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Astronomical surge gauge</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-purple)', marginTop: '2px' }}>{tide} meters</div>
-                      </div>
-                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
-                        <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Sewer gate efficiency</div>
-                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-green)', marginTop: '2px' }}>{drainage}%</div>
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div>
+                          <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Astronomical Tide Gauge</div>
+                          <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-purple)', marginTop: '2px' }}>{tide} M</div>
+                        </div>
+                        <span style={{ fontSize: '0.65rem', fontWeight: 700, padding: '3px 8px', borderRadius: '4px', background: getTideStatus(tide).bg, color: getTideStatus(tide).color }}>{getTideStatus(tide).text}</span>
                       </div>
                     </div>
                   </div>
                 )}
 
-                {/* Live SOS Queue */}
+                {/* EMERGENCY SOS REQUESTS */}
                 <div className="glass-panel" style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Radio style={{ color: 'var(--accent-red)', animation: 'pulse-ring 2s infinite' }} size={18} />
-                      <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>ResQ SOS Dispatch Feed</h3>
+                      <h3 style={{ fontSize: '0.95rem', fontWeight: 800, letterSpacing: '0.05em' }}>EMERGENCY SOS REQUESTS</h3>
                     </div>
-                    <span className="badge badge-danger" style={{ fontSize: '0.65rem' }}>Live Ingest</span>
+                    <span style={{ color: 'rgba(255,255,255,0.3)', cursor: 'pointer', fontSize: '1rem', fontWeight: 'bold' }}>•••</span>
                   </div>
 
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', overflowY: 'auto', maxHeight: '320px', flex: 1, paddingRight: '4px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', overflowY: 'auto', maxHeight: '380px', flex: 1, paddingRight: '4px' }}>
                     {sosRequests.map((ticket) => (
                       <div
                         key={ticket.id}
                         className="glass-panel"
                         style={{
-                          padding: '14px',
-                          background: 'rgba(255,255,255,0.01)',
-                          borderColor: ticket.status === 'PENDING' ? 'rgba(239, 68, 68, 0.15)' : 'var(--border-light)',
-                          borderRadius: '10px',
+                          padding: '12px 16px',
+                          background: 'rgba(10, 18, 30, 0.25)',
+                          borderColor: 'rgba(255, 255, 255, 0.05)',
+                          borderRadius: '8px',
                           display: 'flex',
-                          flexDirection: 'column',
-                          gap: '10px',
+                          alignItems: 'center',
+                          gap: '12px',
                           textAlign: 'left'
                         }}
                       >
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                          <span style={{ fontSize: '0.8rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', color: 'white' }}>
-                            <MapPin size={12} style={{ color: 'var(--accent-cyan)' }} /> {ticket.location}
-                          </span>
-                          <span className={`badge ${
-                            ticket.level === 'CRITICAL' ? 'badge-danger' : 
-                            ticket.level === 'WARNING' ? 'badge-warning' : 'badge-info'
-                          }`} style={{ fontSize: '0.6rem' }}>
-                            {ticket.level}
-                          </span>
+                        {/* Clock Column */}
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', color: '#64748B', gap: '2px', borderRight: '1px solid rgba(255,255,255,0.06)', paddingRight: '12px', minWidth: '45px' }}>
+                          <Clock size={14} style={{ color: 'rgba(255,255,255,0.2)' }} />
+                          <span style={{ fontSize: '0.7rem', fontWeight: 600 }}>{ticket.time}</span>
                         </div>
 
-                        <p style={{ fontSize: '0.75rem', color: '#94A3B8', lineHeight: '1.4' }}>
-                          {ticket.details}
-                        </p>
-
-                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '10px', fontSize: '0.7rem', color: '#64748B' }}>
-                          <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                            <Phone size={10} /> {ticket.contact}
-                          </span>
-                          
-                          {ticket.victimCount > 0 && (
-                            <span style={{ fontWeight: 600, color: 'white' }}>
-                              {ticket.victimCount} People Exposed
-                            </span>
-                          )}
-                        </div>
-
-                        {ticket.status === 'PENDING' ? (
-                          isAdmin ? (
+                        {/* Mid Details Column */}
+                        <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                          <div style={{ fontSize: '0.75rem', fontWeight: 700, color: 'white' }}>
+                            {ticket.location}:
+                          </div>
+                          <div style={{ fontSize: '0.75rem', color: '#94A3B8', display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: '6px' }}>
+                            <span>{ticket.details}</span>
+                            
+                            {/* Inline Dispatch Actions */}
+                            {ticket.status === 'PENDING' ? (
+                              isAdmin ? (
+                                <button
+                                  onClick={() => handleDispatch(ticket.id)}
+                                  style={{
+                                    background: 'none',
+                                    border: 'none',
+                                    padding: 0,
+                                    color: 'var(--accent-blue)',
+                                    textDecoration: 'underline',
+                                    fontSize: '0.7rem',
+                                    fontWeight: 700,
+                                    cursor: 'pointer'
+                                  }}
+                                  disabled={dispatchingId !== null}
+                                >
+                                  [Dispatch]
+                                </button>
+                              ) : (
+                                <span style={{ color: '#64748B', fontSize: '0.7rem', fontWeight: 600 }}>[Pending Admin]</span>
+                              )
+                            ) : ticket.status === 'DISPATCHING' ? (
+                              <span style={{ color: 'var(--accent-blue)', fontSize: '0.7rem', fontWeight: 700, animation: 'pulse 1s infinite' }}>[Dispatching...]</span>
+                            ) : (
+                              <span style={{ color: 'var(--accent-green)', fontSize: '0.7rem', fontWeight: 700 }}>
+                                [Assigned: {ticket.boatId}]
+                              </span>
+                            )}
+                            
+                            <span style={{ color: 'rgba(255,255,255,0.15)' }}>|</span>
+                            
                             <button
-                              onClick={() => handleDispatch(ticket.id)}
-                              className="btn-primary"
-                              style={{ padding: '8px 12px', fontSize: '0.75rem', width: '100%', background: 'var(--gradient-primary)' }}
-                              disabled={dispatchingId !== null}
+                              onClick={() => alert(`Analyst Log [Contact: ${ticket.contact} | Exposures: ${ticket.victimCount} citizens]`)}
+                              style={{
+                                background: 'none',
+                                border: 'none',
+                                padding: 0,
+                                color: 'rgba(0, 210, 255, 0.6)',
+                                textDecoration: 'underline',
+                                fontSize: '0.7rem',
+                                fontWeight: 600,
+                                cursor: 'pointer'
+                              }}
                             >
-                              Assign Nearest NGO Boat
+                              [Details]
                             </button>
-                          ) : (
-                            <div style={{
-                              padding: '10px',
-                              textAlign: 'center',
-                              background: 'rgba(255,255,255,0.02)',
-                              border: '1px dashed rgba(255,255,255,0.08)',
-                              borderRadius: '6px',
-                              color: '#64748B',
-                              fontSize: '0.75rem',
-                              fontWeight: 500
-                            }}>
-                              Awaiting Administrative Dispatch
-                            </div>
-                          )
-                        ) : ticket.status === 'DISPATCHING' ? (
-                          <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            gap: '8px',
-                            padding: '8px',
-                            background: 'rgba(0, 210, 255, 0.1)',
-                            border: '1px solid rgba(0, 210, 255, 0.2)',
-                            borderRadius: '6px',
-                            color: 'var(--accent-blue)',
-                            fontSize: '0.75rem',
-                            fontWeight: 600
-                          }}>
-                            <RefreshCw size={12} className="logo-rotate" /> Ingesting Coordinates & Dispatching...
                           </div>
-                        ) : (
-                          <div style={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            alignItems: 'center',
-                            padding: '8px 12px',
-                            background: 'rgba(16, 185, 129, 0.08)',
-                            border: '1px solid rgba(16, 185, 129, 0.2)',
-                            borderRadius: '6px',
-                            color: 'var(--accent-green)',
-                            fontSize: '0.75rem',
-                            fontWeight: 600
+                        </div>
+
+                        {/* Status Badge Column */}
+                        <div style={{ minWidth: '85px', textAlign: 'right' }}>
+                          <span style={{
+                            padding: '4px 10px',
+                            fontSize: '0.65rem',
+                            fontWeight: 700,
+                            borderRadius: '20px',
+                            background: ticket.status === 'PENDING' ? 'rgba(239, 68, 68, 0.08)' : 'rgba(16, 185, 129, 0.08)',
+                            color: ticket.status === 'PENDING' ? 'var(--accent-red)' : 'var(--accent-green)',
+                            border: ticket.status === 'PENDING' ? '1px solid rgba(239, 68, 68, 0.4)' : '1px solid rgba(16, 185, 129, 0.4)',
+                            boxShadow: ticket.status === 'PENDING' ? '0 0 8px rgba(239, 68, 68, 0.2)' : '0 0 8px rgba(16, 185, 129, 0.2)',
+                            display: 'inline-block',
+                            width: '100%',
+                            textAlign: 'center'
                           }}>
-                            <span style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-                              <Check size={14} /> Assigned: {ticket.boatId}
-                            </span>
-                            <span style={{ fontSize: '0.7rem', color: '#34D399' }}>ETA: {ticket.eta}</span>
-                          </div>
-                        )}
+                            {ticket.status}
+                          </span>
+                        </div>
                       </div>
                     ))}
                   </div>
