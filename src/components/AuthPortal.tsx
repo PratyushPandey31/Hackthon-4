@@ -265,28 +265,58 @@ export const AuthPortal: React.FC<AuthPortalProps> = ({ onLoginSuccess }) => {
           </button>
 
           {isLogin && (
-            <button
-              type="button"
-              onClick={() => {
-                setEmail('admin@floodpulse.in');
-                setPassword('admin123');
-                onLoginSuccess('Pratyush Pandey', 'admin@floodpulse.in');
-              }}
-              className="btn-secondary"
-              style={{
-                width: '100%',
-                marginTop: '4px',
-                background: 'rgba(0, 210, 255, 0.05)',
-                borderColor: 'rgba(0, 210, 255, 0.2)',
-                color: 'var(--accent-blue)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: '8px'
-              }}
-            >
-              Quick Login as Admin (Bypass)
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' }}>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('admin@floodpulse.in');
+                  setPassword('admin123');
+                  onLoginSuccess('Pratyush Pandey', 'admin@floodpulse.in');
+                }}
+                className="btn-secondary"
+                style={{
+                  width: '100%',
+                  background: 'rgba(0, 210, 255, 0.05)',
+                  borderColor: 'rgba(0, 210, 255, 0.2)',
+                  color: 'var(--accent-blue)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                Quick Login as Admin (Bypass)
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  setEmail('analyst@floodpulse.in');
+                  setPassword('analyst123');
+                  
+                  // Add user to database if not present, so UserDirectory works
+                  const storedUsers = JSON.parse(localStorage.getItem('floodpulse_users') || '[]');
+                  if (!storedUsers.some((u: any) => u.email === 'analyst@floodpulse.in')) {
+                    storedUsers.push({ name: 'Rohan Sharma', email: 'analyst@floodpulse.in', password: 'analyst123' });
+                    localStorage.setItem('floodpulse_users', JSON.stringify(storedUsers));
+                  }
+                  
+                  onLoginSuccess('Rohan Sharma', 'analyst@floodpulse.in');
+                }}
+                className="btn-secondary"
+                style={{
+                  width: '100%',
+                  background: 'rgba(157, 78, 221, 0.05)',
+                  borderColor: 'rgba(157, 78, 221, 0.2)',
+                  color: 'var(--accent-purple)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '8px'
+                }}
+              >
+                Quick Login as Analyst (Bypass)
+              </button>
+            </div>
           )}
         </form>
 

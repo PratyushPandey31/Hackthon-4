@@ -75,6 +75,7 @@ function App() {
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
   const [sosRequests, setSosRequests] = useState<SOSTicket[]>(INITIAL_SOS_TICKETS);
   const [dispatchingId, setDispatchingId] = useState<number | null>(null);
+  const [crisisLevel, setCrisisLevel] = useState<'NORMAL' | 'DRILL' | 'RED_ALERT'>('NORMAL');
 
   // Check login session on mount
   useEffect(() => {
@@ -160,8 +161,9 @@ function App() {
   };
 
   // Calculated properties based on rainfall, tide, and drainage
+  const submergenceBoost = crisisLevel === 'RED_ALERT' ? 1.5 : crisisLevel === 'DRILL' ? 0.4 : 0;
   const averageSubmergence = parseFloat(
-    Math.max(0, (rainfall * 0.03 + (tide - 2.0) * 0.5 - (drainage / 100) * 1.2)).toFixed(1)
+    Math.max(0, (rainfall * 0.03 + (tide - 2.0) * 0.5 - (drainage / 100) * 1.2 + submergenceBoost)).toFixed(1)
   );
 
   const getRailwayStatus = () => {
@@ -180,6 +182,39 @@ function App() {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', overflowX: 'hidden' }}>
+      
+      {/* Crisis Warning Banner */}
+      {crisisLevel === 'RED_ALERT' && (
+        <div style={{
+          background: 'var(--gradient-danger)',
+          color: 'white',
+          padding: '8px',
+          textAlign: 'center',
+          fontSize: '0.8rem',
+          fontWeight: 700,
+          letterSpacing: '0.05em',
+          position: 'relative',
+          zIndex: 11,
+          boxShadow: '0 0 15px rgba(239, 68, 68, 0.4)'
+        }}>
+          ⚠️ MUNICIPAL STATE OF EMERGENCY DECLARED: ALL DISTRICT UNITS ON ACTIVE STANDBY
+        </div>
+      )}
+      {crisisLevel === 'DRILL' && (
+        <div style={{
+          background: 'var(--gradient-warning)',
+          color: '#0B0F19',
+          padding: '8px',
+          textAlign: 'center',
+          fontSize: '0.8rem',
+          fontWeight: 700,
+          letterSpacing: '0.05em',
+          position: 'relative',
+          zIndex: 11
+        }}>
+          ⚡ SYSTEM TRAINING DRILL ACTIVE: EMERGENCY PROTOCOLS ENABLED FOR SIMULATION MODE
+        </div>
+      )}
       
       {/* Background Neon Blur Blobs for Glassmorphism */}
       <div style={{ position: 'absolute', top: '5%', left: '10%', width: '350px', height: '350px', borderRadius: '50%', background: 'rgba(0, 210, 255, 0.15)', filter: 'blur(90px)', pointerEvents: 'none', zIndex: 0 }} />
@@ -256,6 +291,32 @@ function App() {
 
         {/* Profile info */}
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          {/* Admin Crisis Level Control */}
+          {isAdmin && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '8px' }}>
+              <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>CRISIS LEVEL:</span>
+              <select
+                value={crisisLevel}
+                onChange={(e) => setCrisisLevel(e.target.value as any)}
+                className="input-field"
+                style={{
+                  padding: '6px 12px',
+                  fontSize: '0.75rem',
+                  width: 'auto',
+                  background: crisisLevel === 'RED_ALERT' ? 'rgba(239, 68, 68, 0.15)' : crisisLevel === 'DRILL' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(255,255,255,0.03)',
+                  borderColor: crisisLevel === 'RED_ALERT' ? 'var(--accent-red)' : crisisLevel === 'DRILL' ? 'var(--accent-yellow)' : 'rgba(255,255,255,0.08)',
+                  color: crisisLevel === 'RED_ALERT' ? 'var(--accent-red)' : crisisLevel === 'DRILL' ? 'var(--accent-yellow)' : 'white',
+                  fontWeight: 600,
+                  cursor: 'pointer'
+                }}
+              >
+                <option value="NORMAL" style={{ background: '#0B0F19', color: 'white' }}>Normal</option>
+                <option value="DRILL" style={{ background: '#0B0F19', color: 'var(--accent-yellow)' }}>Drill Mode</option>
+                <option value="RED_ALERT" style={{ background: '#0B0F19', color: 'var(--accent-red)' }}>Red Alert</option>
+              </select>
+            </div>
+          )}
+
           <div className="desktop-only" style={{ textAlign: 'right' }}>
             <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Active Commander</div>
             <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>{user}</div>
@@ -337,9 +398,9 @@ function App() {
               {/* GIS Map visualization */}
               <div>
                 <MumbaiMap
-                  rainfall={rainfall}
-                  tide={tide}
-                  drainage={drainage}
+                  rainfall={crisisLevel === 'RED_ALERT' ? Math.min(150, rainfall + 30) : rainfall}
+                  tide={crisisLevel === 'RED_ALERT' ? Math.min(6.0, tide + 1.2) : tide}
+                  drainage={crisisLevel === 'RED_ALERT' ? Math.max(0, drainage - 20) : drainage}
                   selectedWardId={selectedWardId}
                   onWardSelect={(ward) => setSelectedWardId(ward.id)}
                 />
