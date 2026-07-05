@@ -168,7 +168,12 @@ function App() {
   }
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', position: 'relative', overflowX: 'hidden' }}>
+      
+      {/* Background Neon Blur Blobs for Glassmorphism */}
+      <div style={{ position: 'absolute', top: '5%', left: '10%', width: '350px', height: '350px', borderRadius: '50%', background: 'rgba(0, 210, 255, 0.15)', filter: 'blur(90px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'absolute', top: '45%', right: '5%', width: '400px', height: '400px', borderRadius: '50%', background: 'rgba(157, 78, 221, 0.12)', filter: 'blur(120px)', pointerEvents: 'none', zIndex: 0 }} />
+      <div style={{ position: 'absolute', bottom: '15%', left: '25%', width: '350px', height: '350px', borderRadius: '50%', background: 'rgba(0, 245, 212, 0.08)', filter: 'blur(90px)', pointerEvents: 'none', zIndex: 0 }} />
       
       {/* Header bar */}
       <header className="glass-panel" style={{
@@ -243,7 +248,7 @@ function App() {
       </header>
 
       {/* Main Panel Content */}
-      <main style={{ flex: 1, padding: '0 16px 16px 16px', display: 'flex', flexDirection: 'column' }}>
+      <main style={{ flex: 1, padding: '0 16px 16px 16px', display: 'flex', flexDirection: 'column', position: 'relative', zIndex: 2 }}>
         
         {activeTab === 'dashboard' && (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -518,7 +523,7 @@ function App() {
       </main>
       
       {/* Footer copyright */}
-      <footer style={{ padding: '16px', color: '#475569', fontSize: '0.75rem', textAlign: 'center', borderTop: '1px solid var(--border-light)', marginTop: 'auto' }}>
+      <footer style={{ padding: '16px', color: '#475569', fontSize: '0.75rem', textAlign: 'center', borderTop: '1px solid var(--border-light)', marginTop: 'auto', position: 'relative', zIndex: 2 }}>
         FloodPulse Command Center © 2026. Prepared for Rotaract Club of TCET Professional Development Avenue.
       </footer>
     </div>
