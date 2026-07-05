@@ -15,18 +15,53 @@ interface SiloUnifierProps {
 const SAMPLE_MESSAGES = [
   {
     id: 1,
-    title: 'Kurla West Rescue',
+    title: 'Kurla L-Ward Rescue',
     text: 'URGENT: Kurla West near station has 4.5 feet water. Ground floor houses are completely submerged. Around 12 elderly people trapped. Contact number is 9876543210. Please send boats!'
   },
   {
     id: 2,
-    title: 'Dadar Water-Logging',
+    title: 'Dadar G-North Inundation',
     text: 'Water level rising rapidly at Dadar East near Hindmata Cinema, currently 2.5 feet. Blocked drainage is overflowing. Traffic stopped. Volunteer contact: 9988776655.'
   },
   {
     id: 3,
-    title: 'Sion Railway Halt',
-    text: 'Rail tracks at Sion station are completely submerged. Central line trains suspended between CSMT and Kurla. 150 passengers stranded on platform. Station master log.'
+    title: 'Sion Platform Halts',
+    text: 'Rail tracks at Sion F-North station are completely submerged. Central line trains suspended between CSMT and Kurla. 150 passengers stranded on platform. Station master log: 9810023456.'
+  },
+  {
+    id: 4,
+    title: 'Malad P-North Housing',
+    text: 'ALERT: Low-lying slums in Malad Malwani sector experiencing severe submergence, water level at 3.5 feet. Over 25 families trapped inside ground floor shanties. Emergency contact: 9830045678.'
+  },
+  {
+    id: 5,
+    title: 'Andheri K-West Subway',
+    text: 'Andheri West subway flooded under railway bridge, water height is 4.0 feet. Multiple vehicles stalled. 5 citizens climbed on car roofs waiting for rescue. Contact: 9890012345.'
+  },
+  {
+    id: 6,
+    title: 'Dharavi G-North Density',
+    text: 'CRITICAL: Severe waterlogging in Dharavi sector 3. Local creek backflowing. Heavy rain has flooded local households. 30 people exposed. Contact cell: 9820098765.'
+  },
+  {
+    id: 7,
+    title: 'Colaba A-Ward astronomical surge',
+    text: 'Colaba Geeta Nagar slums hit by high tide astronomical surge. Coastal waves entering houses. Water logging level at 2.0 feet. Inhabitants moving to higher grounds. Contact: 9930054321.'
+  },
+  {
+    id: 8,
+    title: 'Byculla E-Ward Transit block',
+    text: 'Byculla East underpass completely flooded due to backflow of Love Grove outfall. Inundation depth is 3.0 feet. Transit disrupted. Relief coordinator contact: 9967788990.'
+  },
+  {
+    id: 9,
+    title: 'Chembur M-West Waterlogging',
+    text: 'Moderate waterlogging near Chembur Shell Colony. Height is 1.5 feet. Drainage channels blocked by plastic trash. Local resident contact: 9875566778.'
+  },
+  {
+    id: 10,
+    title: 'Santacruz H-East Subway',
+    text: 'Santacruz East subway flooded. Water level currently 2.0 feet. Traffic diverted to Bandra flyover. 8 people seeking assistance. Contact number is 9812233445.'
   }
 ];
 
@@ -59,17 +94,29 @@ export const SiloUnifier: React.FC<SiloUnifierProps> = ({ isAdmin, onParsedSOS }
 
       // Extract location
       if (lowerText.includes('kurla')) {
-        location = 'Kurla (L-Ward)';
+        location = 'WARD L (Kurla)';
       } else if (lowerText.includes('dadar')) {
-        location = 'Dadar (G-North)';
+        location = 'WARD G/S (Dadar)';
       } else if (lowerText.includes('sion')) {
-        location = 'Kurla (L-Ward)'; // Mapping Sion to Kurla area
+        location = 'WARD F/N (Sion)';
       } else if (lowerText.includes('bandra')) {
-        location = 'Bandra (H-West)';
+        location = 'WARD H/W (Bandra)';
       } else if (lowerText.includes('andheri')) {
-        location = 'Andheri (K-West)';
+        location = 'WARD K/W (Andheri)';
       } else if (lowerText.includes('colaba')) {
-        location = 'Colaba (A-Ward)';
+        location = 'WARD A (Colaba)';
+      } else if (lowerText.includes('malad')) {
+        location = 'WARD P/N (Malad)';
+      } else if (lowerText.includes('dharavi')) {
+        location = 'WARD G/N (Dharavi)';
+      } else if (lowerText.includes('byculla')) {
+        location = 'WARD E (Byculla)';
+      } else if (lowerText.includes('chembur')) {
+        location = 'WARD M/W (Chembur)';
+      } else if (lowerText.includes('santacruz')) {
+        location = 'WARD H/E (Santacruz)';
+      } else if (lowerText.includes('ghatkopar')) {
+        location = 'WARD N (Ghatkopar)';
       }
 
       // Extract severity & details
