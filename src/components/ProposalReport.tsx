@@ -12,24 +12,85 @@ export const ProposalReport: React.FC = () => {
     <div className="glass-panel" style={{ padding: '32px', display: 'flex', gap: '24px', minHeight: '620px' }}>
       
       {/* Table of Contents Sidebar */}
-      <div style={{ width: '220px', borderRight: '1px solid var(--border-light)', paddingRight: '20px', display: 'flex', flexDirection: 'column', gap: '16px', flexShrink: 0 }}>
+      <div style={{ width: '230px', borderRight: '1px solid var(--border-light)', paddingRight: '20px', display: 'flex', flexDirection: 'column', gap: '20px', flexShrink: 0 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-cyan)' }}>
           <BookOpen size={18} />
-          <span style={{ fontSize: '0.85rem', fontWeight: 700, textTransform: 'uppercase' }}>DOCUMENT INDEX</span>
+          <span style={{ fontSize: '0.85rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.05em' }}>DOCUMENT INDEX</span>
         </div>
         
-        <nav style={{ display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.8rem' }}>
-          <a href="#abstract" style={{ color: '#E2E8F0', textDecoration: 'none', fontWeight: 500 }}>Abstract & Executive Summary</a>
-          <a href="#problem" style={{ color: '#94A3B8', textDecoration: 'none' }}>Problem Statement Details</a>
-          <a href="#solution" style={{ color: '#94A3B8', textDecoration: 'none' }}>The FloodPulse Framework</a>
-          <a href="#architecture" style={{ color: '#94A3B8', textDecoration: 'none' }}>Technical Architecture</a>
-          <a href="#gis-map" style={{ color: '#94A3B8', textDecoration: 'none' }}>Glassmorphic GIS Map Design</a>
-          <a href="#social" style={{ color: '#94A3B8', textDecoration: 'none' }}>Social Impact & Feasibility</a>
-          <a href="#sustainability" style={{ color: '#94A3B8', textDecoration: 'none' }}>Sustainability & Scale</a>
+        <nav style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.8rem', textAlign: 'left' }}>
+          {[
+            { id: 'abstract', text: 'Abstract & Summary' },
+            { id: 'problem', text: 'Problem Statement' },
+            { id: 'solution', text: 'FloodPulse Framework' },
+            { id: 'architecture', text: 'Technical Core' },
+            { id: 'gis-map', text: 'GIS Map Design' },
+            { id: 'social', text: 'Social Value Index' },
+            { id: 'sustainability', text: 'Scaling Roadmap' }
+          ].map((item) => (
+            <a 
+              key={item.id}
+              href={`#${item.id}`} 
+              className="tab-btn"
+              style={{ 
+                color: '#94A3B8', 
+                textDecoration: 'none', 
+                padding: '6px 12px', 
+                borderRadius: '4px', 
+                background: 'rgba(255,255,255,0.01)',
+                border: '1px solid rgba(255,255,255,0.03)',
+                display: 'block',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.borderColor = 'var(--accent-cyan)';
+                e.currentTarget.style.color = 'white';
+                e.currentTarget.style.background = 'rgba(0, 245, 212, 0.04)';
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.03)';
+                e.currentTarget.style.color = '#94A3B8';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.01)';
+              }}
+            >
+              {item.text}
+            </a>
+          ))}
         </nav>
 
-        <button onClick={handlePrint} className="btn-secondary" style={{ marginTop: 'auto', fontSize: '0.8rem', padding: '8px 12px' }}>
-          <Printer size={14} /> Print / Export PDF
+        {/* Telemetry metadata status block */}
+        <div style={{ padding: '12px', background: 'rgba(4, 7, 18, 0.4)', border: '1px solid rgba(255, 255, 255, 0.04)', borderRadius: '6px', fontSize: '0.65rem', fontFamily: 'monospace', color: '#64748B', display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left', marginTop: 'auto' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>SECURITY:</span>
+            <span style={{ color: '#F87171', fontWeight: 'bold' }}>CLASSIFIED</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>REVISION:</span>
+            <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>v1.9.8</span>
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+            <span>INTEGRITY:</span>
+            <span style={{ color: 'var(--accent-green)', fontWeight: 'bold' }}>SIGNED</span>
+          </div>
+        </div>
+
+        <button 
+          onClick={handlePrint} 
+          className="btn-primary" 
+          style={{ 
+            fontSize: '0.8rem', 
+            padding: '10px 14px', 
+            width: '100%', 
+            border: 'none', 
+            background: 'var(--gradient-primary)', 
+            cursor: 'pointer', 
+            display: 'flex', 
+            alignItems: 'center', 
+            justifyContent: 'center', 
+            gap: '6px' 
+          }}
+        >
+          <Printer size={14} /> Export Proposal
         </button>
       </div>
 

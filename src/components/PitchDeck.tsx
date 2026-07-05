@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, Presentation, CheckCircle, ShieldAlert, Cpu, Sparkles, TrendingUp, Compass } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronLeft, ChevronRight, Presentation, CheckCircle, ShieldAlert, Cpu, Sparkles, TrendingUp, Compass, Play, Pause } from 'lucide-react';
 
 export const PitchDeck: React.FC = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    const timer = setInterval(() => {
+      setCurrentSlide(prev => (prev === 4 ? 0 : prev + 1)); // We have 5 slides (index 0 to 4)
+    }, 4500);
+    return () => clearInterval(timer);
+  }, [isPlaying]);
 
   const slides = [
     {
@@ -270,10 +279,15 @@ export const PitchDeck: React.FC = () => {
   ];
 
   return (
-    <div className="glass-panel" style={{ padding: '32px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '620px' }}>
+    <div className="glass-panel" style={{ padding: '32px', height: '100%', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: '620px', position: 'relative', overflow: 'hidden' }}>
       
+      {/* Slide Progress Indicator */}
+      <div style={{ height: '3px', width: '100%', background: 'rgba(255,255,255,0.04)', position: 'absolute', top: 0, left: 0, overflow: 'hidden' }}>
+        <div style={{ height: '100%', width: `${((currentSlide + 1) / slides.length) * 100}%`, background: 'var(--gradient-primary)', transition: 'width 0.4s ease-out' }} />
+      </div>
+
       {/* Slide Header */}
-      <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-light)', paddingBottom: '20px', marginBottom: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', borderBottom: '1px solid var(--border-light)', paddingBottom: '20px', marginBottom: '20px', marginTop: '4px' }}>
         <div>
           <h2 style={{
             fontSize: '1.6rem',
@@ -300,7 +314,7 @@ export const PitchDeck: React.FC = () => {
       </div>
 
       {/* Slide Footer */}
-      <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '20px', marginTop: '20px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid var(--border-light)', paddingTop: '20px', marginTop: '20px' }}>
         <span style={{ fontSize: '0.8rem', color: '#64748B', display: 'flex', alignItems: 'center', gap: '8px' }}>
           <span>Slide {currentSlide + 1} of {slides.length}</span>
           <span>•</span>
@@ -309,37 +323,67 @@ export const PitchDeck: React.FC = () => {
 
         {/* Navigation Controls */}
         <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+          {/* Autoplay Slideshow */}
           <button
-            onClick={() => setCurrentSlide(prev => Math.max(0, prev - 1))}
+            onClick={() => setIsPlaying(prev => !prev)}
+            className="btn-secondary"
+            style={{ 
+              padding: '8px 14px', 
+              borderRadius: '6px', 
+              display: 'flex', 
+              alignItems: 'center', 
+              gap: '6px', 
+              fontSize: '0.75rem', 
+              borderColor: isPlaying ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.08)', 
+              color: isPlaying ? 'var(--accent-cyan)' : '#E2E8F0',
+              height: '34px'
+            }}
+          >
+            {isPlaying ? <Pause size={14} /> : <Play size={14} />}
+            <span>{isPlaying ? 'PAUSE AUTO' : 'PLAY DECK'}</span>
+          </button>
+
+          <button
+            onClick={() => {
+              setCurrentSlide(prev => Math.max(0, prev - 1));
+              setIsPlaying(false);
+            }}
             className="btn-secondary"
             disabled={currentSlide === 0}
-            style={{ padding: '8px 12px', borderRadius: '6px' }}
+            style={{ padding: '8px 12px', borderRadius: '6px', height: '34px' }}
           >
             <ChevronLeft size={18} />
           </button>
           
-          <div style={{ display: 'flex', gap: '6px' }}>
+          <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
             {slides.map((_, index) => (
               <span
                 key={index}
-                onClick={() => setCurrentSlide(index)}
+                onClick={() => {
+                  setCurrentSlide(index);
+                  setIsPlaying(false);
+                }}
                 style={{
-                  width: '8px',
+                  width: index === currentSlide ? '18px' : '8px',
                   height: '8px',
-                  borderRadius: '50%',
+                  borderRadius: '4px',
                   background: index === currentSlide ? 'var(--accent-cyan)' : 'rgba(255,255,255,0.1)',
                   cursor: 'pointer',
-                  transition: 'background-color 0.2s'
+                  transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                  boxShadow: index === currentSlide ? '0 0 8px rgba(0, 245, 212, 0.4)' : 'none'
                 }}
               />
             ))}
           </div>
 
           <button
-            onClick={() => setCurrentSlide(prev => Math.min(slides.length - 1, prev + 1))}
+            onClick={() => {
+              setCurrentSlide(prev => Math.min(slides.length - 1, prev + 1));
+              setIsPlaying(false);
+            }}
             className="btn-secondary"
             disabled={currentSlide === slides.length - 1}
-            style={{ padding: '8px 12px', borderRadius: '6px' }}
+            style={{ padding: '8px 12px', borderRadius: '6px', height: '34px' }}
           >
             <ChevronRight size={18} />
           </button>
