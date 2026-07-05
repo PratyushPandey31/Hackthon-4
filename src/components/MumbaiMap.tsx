@@ -22,7 +22,7 @@ interface MumbaiMapProps {
   onClick?: () => void;
 }
 
-const WARDS: WardData[] = [
+export const WARDS: WardData[] = [
   {
     id: 'ab_north',
     name: 'A/B (North)',

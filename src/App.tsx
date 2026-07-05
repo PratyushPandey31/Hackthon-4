@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { AuthPortal, RadarLogo } from './components/AuthPortal';
-import { MumbaiMap } from './components/MumbaiMap';
+import { MumbaiMap, WARDS } from './components/MumbaiMap';
 import { SiloUnifier } from './components/SiloUnifier';
 import { PitchDeck } from './components/PitchDeck';
 import { ProposalReport } from './components/ProposalReport';
@@ -616,7 +616,7 @@ function App() {
             <div className="dashboard-grid">
               
                {/* GIS Map visualization */}
-               <div style={{ height: '100%' }}>
+               <div style={{ height: '100%', position: 'relative' }}>
                  <MumbaiMap
                    rainfall={crisisLevel === 'RED_ALERT' ? Math.min(150, rainfall + 30) : rainfall}
                    tide={crisisLevel === 'RED_ALERT' ? Math.min(6.0, tide + 1.2) : tide}
@@ -626,6 +626,113 @@ function App() {
                    className={getCardClass('card-gis-map')}
                    onClick={() => setSelectedCardId('card-gis-map')}
                  />
+
+                 {/* Holographic Telemetry HUD Panel Overlay */}
+                 {selectedWardId && (() => {
+                   const wardData = WARDS.find(w => w.id === selectedWardId);
+                   if (!wardData) return null;
+                   
+                   // Dynamic localized risk estimation
+                   const localRisk = Math.min(100, Math.floor((rainfall * 0.35 + tide * 6.5) * (1.2 - wardData.elevation * 0.08)));
+                   
+                   return (
+                     <div className="glass-panel text-glow" style={{
+                       position: 'absolute',
+                       top: '16px',
+                       right: '16px',
+                       width: '260px',
+                       background: 'rgba(3, 7, 18, 0.9)',
+                       backdropFilter: 'blur(12px)',
+                       border: '1px solid rgba(0, 245, 212, 0.3)',
+                       borderRadius: '8px',
+                       padding: '16px',
+                       textAlign: 'left',
+                       boxShadow: '0 8px 32px 0 rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(0, 245, 212, 0.1)',
+                       zIndex: 10,
+                       animation: 'fade-in 0.3s ease'
+                     }}>
+                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid rgba(0, 245, 212, 0.15)', paddingBottom: '8px', marginBottom: '10px' }}>
+                         <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+                           <span style={{ display: 'inline-block', width: '6px', height: '6px', borderRadius: '50%', background: localRisk > 70 ? 'var(--accent-red)' : localRisk > 40 ? 'var(--accent-yellow)' : 'var(--accent-green)', animation: 'pulse 1s infinite' }} />
+                           <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'white', fontFamily: 'monospace' }}>{wardData.name.toUpperCase()} SECTOR</span>
+                         </div>
+                         <button 
+                           onClick={(e) => {
+                             e.stopPropagation();
+                             setSelectedWardId(null);
+                           }}
+                           style={{ background: 'none', border: 'none', color: '#94A3B8', fontSize: '0.9rem', cursor: 'pointer', fontWeight: 'bold', padding: 0 }}
+                         >
+                           ✕
+                         </button>
+                       </div>
+
+                       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '0.75rem', fontFamily: 'monospace' }}>
+                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                           <span style={{ color: '#64748B' }}>SECTOR ELEVATION:</span>
+                           <span style={{ color: 'white', fontWeight: 'bold' }}>{wardData.elevation} METERS</span>
+                         </div>
+
+                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                           <span style={{ color: '#64748B' }}>POPULATION CLASS:</span>
+                           <span style={{ color: 'white', fontWeight: 'bold', fontSize: '0.65rem' }}>{wardData.populationDensity}</span>
+                         </div>
+
+                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                           <span style={{ color: '#64748B' }}>DEPLOYED VESSELS:</span>
+                           <span style={{ color: 'var(--accent-cyan)', fontWeight: 'bold' }}>{wardData.activeBoats} BOATS</span>
+                         </div>
+
+                         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid rgba(255,255,255,0.04)', paddingTop: '8px', marginTop: '4px' }}>
+                           <span style={{ color: '#94A3B8', fontWeight: 'bold' }}>LOCAL RISK ESTIMATE:</span>
+                           <span style={{ color: localRisk > 70 ? 'var(--accent-red)' : localRisk > 40 ? 'var(--accent-yellow)' : 'var(--accent-green)', fontWeight: 'extrabold', fontSize: '0.9rem' }}>{localRisk}%</span>
+                         </div>
+
+                         <div style={{ height: '4px', background: 'rgba(255,255,255,0.05)', borderRadius: '2px', overflow: 'hidden', marginBottom: '8px' }}>
+                           <div style={{ width: `${localRisk}%`, height: '100%', background: localRisk > 70 ? 'var(--accent-red)' : localRisk > 40 ? 'var(--accent-yellow)' : 'var(--accent-green)', borderRadius: '2px' }} />
+                         </div>
+
+                         {/* Direct action triggers */}
+                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px', marginTop: '6px' }}>
+                           <button 
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               const customSOS: SOSTicket = {
+                                 id: Date.now(),
+                                 time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                                 location: `WARD ${wardData.name}`,
+                                 details: `Preemptive dispatch generated by met-gauge warning for ${wardData.name} (Surge Risk: ${localRisk}%).`,
+                                 level: localRisk > 70 ? 'CRITICAL' : localRisk > 40 ? 'WARNING' : 'ALERT',
+                                 contact: '+91 99999 88888',
+                                 victimCount: Math.ceil(localRisk / 20) || 1,
+                                 status: 'PENDING'
+                               };
+                               setSosRequests(prev => [customSOS, ...prev]);
+                               addSystemLog(`Registered preemptive evacuation ticket for ${wardData.name}.`);
+                               alert(`Preemptive rescue task created for ${wardData.name}!`);
+                             }}
+                             className="btn-primary" 
+                             style={{ padding: '6px 8px', fontSize: '0.65rem', border: 'none', background: 'var(--gradient-primary)', height: '28px', cursor: 'pointer' }}
+                           >
+                             Dispatch Aid
+                           </button>
+                           <button 
+                             onClick={(e) => {
+                               e.stopPropagation();
+                               setScanningSector(wardData.name.includes('Kurla') ? 'WARD L (Kurla)' : wardData.name.includes('Dadar') ? 'WARD G/S (Dadar)' : wardData.name.includes('Sion') ? 'WARD F/N (Sion)' : wardData.name.includes('Bandra') ? 'WARD H/W (Bandra)' : wardData.name.includes('Andheri') ? 'WARD K/W (Andheri)' : wardData.name.includes('Dharavi') ? 'WARD G/N (Dharavi)' : wardData.name.includes('Malad') ? 'WARD P/N (Malad)' : wardData.name.includes('Byculla') ? 'WARD E (Byculla)' : `WARD ${wardData.name}`);
+                               setActiveTab('logs');
+                               alert(`Locked scanner trajectory target to WARD ${wardData.name}!`);
+                             }}
+                             className="btn-secondary" 
+                             style={{ padding: '6px 8px', fontSize: '0.65rem', height: '28px', cursor: 'pointer' }}
+                           >
+                             Radar Scan
+                           </button>
+                         </div>
+                       </div>
+                     </div>
+                   );
+                 })()}
                </div>
 
               {/* Controls and SOS queue */}
