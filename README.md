@@ -26,13 +26,13 @@ Drawing inspiration from real municipal telemetry cells, it integrates fragmente
 ## 2. Key Operational Pillars
 
 ### 🌐 Glassmorphic GIS Submergence Map
-* **Zero External Dependencies:** Native SVG rendering representing Mumbai's peninsular municipal wards from Colaba to Borivali. Functions completely offline without loading heavy Google Maps or Mapbox tiles.
-* **Blueprint Styling:** Features a tactical vector grid pattern and a rotating radar radar sweep overlay.
+* **Zero External Dependencies:** Native SVG rendering representing Mumbai's peninsular municipal wards (expanded to a high-resolution 22-ward dataset matching the mockup canvas). Functions completely offline without loading heavy Google Maps or Mapbox tiles.
+* **Blueprint Styling:** Features a tactical vector grid pattern (20px modules), geographical water body labels (Arabian Sea, Thane Creek, Back Bay), overlay street network lines, and a rotating radar sweep overlay.
 * **Hardware-Accelerated Glow Filters:** Applies inline SVG Gaussian blur glow layers (`#neonGlow`) around high-risk and selected wards to instantly highlight critical zones without CPU overhead.
 * **Translucent Linear Gradients:** Color codes wards dynamically based on calculated risk levels (Mint Green: Safe, Cyan: Alert, Amber: Warning, Neon Red: Critical).
 
 ### 🎛️ AI Hydrological Simulator (Admin Exclusive)
-* **Live Forecast Sliders:** Allows commanders to tweak precipitation rates (0-150 mm/hr), high tide surge tables (1.0m to 6.0m), and sewer drainage blockage percentages.
+* **Live Forecast Sliders:** Allows commanders to tweak precipitation rates (Range: 0-250 mm/hr) and high tide surge tables (Range: 0.0m to 6.5m).
 * **Coincidence Risk Model:** Evaluates simulated variables against ward elevation profiles to predict water-logging depths and update status feeds in real-time.
 * **Railway Network Interlock:** Automatically triggers delay/suspension warnings for central railway tracks under severe storm coincidences.
 
@@ -41,6 +41,7 @@ Drawing inspiration from real municipal telemetry cells, it integrates fragmente
 * **Ingestion Queue:** Admin commanders can verify parsed feeds and click "Merge" to push them into the global SOS dispatch stack.
 
 ### ⚓ SOS Coordination Queue & Active Dispatch
+* **Compact Feed Rows:** Features clock-based rows with custom inline actions (`[Dispatch]`, `[Details]`) instead of chunky block buttons, matching the exact styling of the mockup.
 * **Vessel Routing:** Identifies nearest available NGO response craft, showing loading telemetry states during dispatch.
 * **Interactive Feedback:** Triggers micro-animations and screen-wide canvas-confetti celebratory explosions upon successful boat assignments.
 
