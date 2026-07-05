@@ -23,6 +23,7 @@ export const ProposalReport: React.FC = () => {
           <a href="#problem" style={{ color: '#94A3B8', textDecoration: 'none' }}>Problem Statement Details</a>
           <a href="#solution" style={{ color: '#94A3B8', textDecoration: 'none' }}>The FloodPulse Framework</a>
           <a href="#architecture" style={{ color: '#94A3B8', textDecoration: 'none' }}>Technical Architecture</a>
+          <a href="#gis-map" style={{ color: '#94A3B8', textDecoration: 'none' }}>Glassmorphic GIS Map Design</a>
           <a href="#social" style={{ color: '#94A3B8', textDecoration: 'none' }}>Social Impact & Feasibility</a>
           <a href="#sustainability" style={{ color: '#94A3B8', textDecoration: 'none' }}>Sustainability & Scale</a>
         </nav>
@@ -144,6 +145,22 @@ export const ProposalReport: React.FC = () => {
               </tr>
             </tbody>
           </table>
+        </section>
+
+        {/* Section: GIS Map Design */}
+        <section id="gis-map" style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--accent-cyan)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <Layers size={16} /> Glassmorphic GIS Map Design
+          </h2>
+          <p style={{ fontSize: '0.85rem', color: '#E2E8F0', marginBottom: '12px' }}>
+            To deliver an interface matching industry standards, the Geographical Submergence visualizer has been engineered as a high-fidelity glassmorphic GIS component. Key visual and architectural implementations include:
+          </p>
+          <ul style={{ fontSize: '0.85rem', color: '#94A3B8', paddingLeft: '20px', display: 'flex', flexDirection: 'column', gap: '8px', marginBottom: '12px' }}>
+            <li><strong>Tactical Blueprint Grid:</strong> Overlaid with a vector grid background (20px pattern modules) inside the SVG viewport, creating a tech-terminal display aesthetic that assists alignment inspections.</li>
+            <li><strong>Translucent Glassmorphic Gradients:</strong> Instead of solid fills, ward paths utilize linear gradients with alpha-channel transparency, allowing background glow blobs to diffuse through the map elements.</li>
+            <li><strong>Hardware-Accelerated Glow Filters:</strong> Features inline SVG Gaussian blur definitions (`#neonGlow`) that render outer drop-shadow glow fields around selected or high-risk wards, reducing CPU rendering overhead.</li>
+            <li><strong>Offline-First Rendering:</strong> Built entirely with native SVG path coordinates representing Mumbai's peninsular sub-wards, eliminating dependencies on external WebGL tile servers and ensuring operational availability during network outages.</li>
+          </ul>
         </section>
 
         {/* Section: Social Impact */}
