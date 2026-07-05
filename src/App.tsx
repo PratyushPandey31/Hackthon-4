@@ -928,15 +928,54 @@ function App() {
                     <rect width="100%" height="100%" fill="url(#dopplerGrid)" />
                   </svg>
                   <svg width="220" height="220" viewBox="0 0 200 200" style={{ position: 'relative' }}>
-                    <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(0, 245, 212, 0.25)" strokeWidth="1" />
-                    <circle cx="100" cy="100" r="60" fill="none" stroke="rgba(0, 245, 212, 0.15)" strokeWidth="1" />
-                    <circle cx="100" cy="100" r="30" fill="none" stroke="rgba(0, 245, 212, 0.08)" strokeWidth="1" />
-                    {/* Simulated storm cell */}
-                    <circle cx="130" cy="80" r={Math.min(45, Math.max(12, rainfall * 0.25))} fill="rgba(239, 68, 68, 0.45)" filter="blur(6px)" />
-                    <circle cx="70" cy="110" r={Math.min(30, Math.max(8, tide * 5))} fill="rgba(245, 158, 11, 0.35)" filter="blur(4px)" />
-                    <circle cx="120" cy="90" r="8" fill="var(--accent-cyan)" style={{ animation: 'pulse 1.5s infinite' }} />
-                    {/* Radar sweeping hand */}
-                    <line x1="100" y1="100" x2="190" y2="100" stroke="rgba(0, 245, 212, 0.85)" strokeWidth="1.5" style={{ transformOrigin: '100px 100px', animation: 'logo-rotate 6s linear infinite' }} />
+                    <defs>
+                      <linearGradient id="sweepGlowGrad" x1="100%" y1="0%" x2="0%" y2="100%">
+                        <stop offset="0%" stopColor="rgba(0, 245, 212, 0.4)" />
+                        <stop offset="100%" stopColor="rgba(0, 245, 212, 0)" />
+                      </linearGradient>
+                      <filter id="radarGlow">
+                        <feGaussianBlur stdDeviation="1.5" result="blur" />
+                        <feMerge>
+                          <feMergeNode in="blur" />
+                          <feMergeNode in="SourceGraphic" />
+                        </feMerge>
+                      </filter>
+                    </defs>
+
+                    {/* Concentric Technical HUD Rings */}
+                    <circle cx="100" cy="100" r="90" fill="none" stroke="rgba(0, 245, 212, 0.35)" strokeWidth="1" strokeDasharray="4,4" />
+                    <circle cx="100" cy="100" r="70" fill="none" stroke="rgba(0, 210, 255, 0.2)" strokeWidth="1" />
+                    <circle cx="100" cy="100" r="50" fill="none" stroke="rgba(157, 78, 221, 0.25)" strokeWidth="1" strokeDasharray="2,5" />
+                    <circle cx="100" cy="100" r="30" fill="none" stroke="rgba(16, 185, 129, 0.15)" strokeWidth="1" />
+
+                    {/* Coordinate Grid Crosshairs */}
+                    <line x1="100" y1="10" x2="100" y2="190" stroke="rgba(0, 245, 212, 0.08)" strokeWidth="0.8" strokeDasharray="3,3" />
+                    <line x1="10" y1="100" x2="190" y2="100" stroke="rgba(0, 245, 212, 0.08)" strokeWidth="0.8" strokeDasharray="3,3" />
+
+                    {/* Compass Ticks & Labels */}
+                    <text x="100" y="14" fill="rgba(0, 245, 212, 0.7)" fontSize="8px" fontFamily="monospace" fontWeight="bold" textAnchor="middle">0° N</text>
+                    <text x="100" y="195" fill="rgba(0, 245, 212, 0.7)" fontSize="8px" fontFamily="monospace" fontWeight="bold" textAnchor="middle">180° S</text>
+                    <text x="187" y="103" fill="rgba(0, 245, 212, 0.7)" fontSize="8px" fontFamily="monospace" fontWeight="bold" textAnchor="start">90° E</text>
+                    <text x="13" y="103" fill="rgba(0, 245, 212, 0.7)" fontSize="8px" fontFamily="monospace" fontWeight="bold" textAnchor="end">270° W</text>
+
+                    {/* Simulated storm cell radar returns */}
+                    <circle cx="130" cy="80" r={Math.min(45, Math.max(12, rainfall * 0.25))} fill="rgba(239, 68, 68, 0.4)" filter="blur(5px)" />
+                    <circle cx="70" cy="110" r={Math.min(30, Math.max(8, tide * 5))} fill="rgba(245, 158, 11, 0.3)" filter="blur(4px)" />
+                    
+                    {/* Active Tracking Reticle Crosshairs */}
+                    <path d="M 125 80 L 135 80 M 130 75 L 130 85" stroke="rgba(239, 68, 68, 0.8)" strokeWidth="1" />
+                    <text x="136" y="78" fill="rgba(239, 68, 68, 0.8)" fontSize="6px" fontFamily="monospace" fontWeight="bold">CELL_A: INUNDATION</text>
+
+                    <path d="M 65 110 L 75 110 M 70 105 L 70 115" stroke="rgba(245, 158, 11, 0.8)" strokeWidth="1" />
+                    <text x="76" y="108" fill="rgba(245, 158, 11, 0.8)" fontSize="6px" fontFamily="monospace" fontWeight="bold">CELL_B: SURGE</text>
+
+                    <circle cx="120" cy="90" r="4" fill="var(--accent-cyan)" style={{ animation: 'pulse 1.5s infinite' }} />
+
+                    {/* Sweeper Hand and Trailer Trail Fade */}
+                    <g style={{ transformOrigin: '100px 100px', animation: 'logo-rotate 5s linear infinite' }}>
+                      <path d="M 100 100 L 190 100 A 90 90 0 0 0 163.6 36.4 Z" fill="url(#sweepGlowGrad)" />
+                      <line x1="100" y1="100" x2="190" y2="100" stroke="rgba(0, 245, 212, 0.95)" strokeWidth="1.8" filter="url(#radarGlow)" />
+                    </g>
                   </svg>
                   <div style={{ position: 'absolute', bottom: '12px', left: '12px', background: 'rgba(0,0,0,0.6)', padding: '6px 12px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.1)', fontSize: '0.65rem', fontFamily: 'monospace', color: '#34D399' }}>
                     MET-RADAR // SWEEP ACTIVE // CELL INUNDATION MARKER: <span style={{ color: 'var(--accent-red)', fontWeight: 'bold' }}>{rainfall > 100 ? 'CLOUDBURST DETECTED' : 'PRECIPITATION STABLE'}</span>
