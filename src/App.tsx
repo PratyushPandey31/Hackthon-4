@@ -349,73 +349,100 @@ function App() {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 
                 {/* AI Simulation Control Panel */}
-                <div className="glass-panel" style={{ padding: '20px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
-                    <Settings style={{ color: 'var(--accent-cyan)' }} size={18} />
-                    <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>AI Submergence Simulator</h3>
+                {/* AI Simulation / Telemetry Status Panel based on Role */}
+                {isAdmin ? (
+                  <div className="glass-panel" style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                      <Settings style={{ color: 'var(--accent-cyan)' }} size={18} />
+                      <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>AI Submergence Simulator</h3>
+                    </div>
+
+                    <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '16px', textAlign: 'left' }}>
+                      Adjust real-time rainfall levels, high tide tables, and drainage blockages to recalculate inundation risk on the map.
+                    </p>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
+                          <span>Rainfall Intensity</span>
+                          <span style={{ color: 'var(--accent-blue)' }}>{rainfall} mm/hr</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="150"
+                          value={rainfall}
+                          onChange={(e) => setRainfall(parseInt(e.target.value))}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
+                          <span>Drizzle (0mm)</span>
+                          <span>Cloudburst (150mm)</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
+                          <span>High Tide Height</span>
+                          <span style={{ color: 'var(--accent-purple)' }}>{tide} meters</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="1.0"
+                          max="6.0"
+                          step="0.1"
+                          value={tide}
+                          onChange={(e) => setTide(parseFloat(e.target.value))}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
+                          <span>Low Tide (1.0m)</span>
+                          <span>Extreme Surge (6.0m)</span>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
+                          <span>Drainage Efficiency</span>
+                          <span style={{ color: drainage < 50 ? 'var(--accent-red)' : 'var(--accent-green)' }}>{drainage}%</span>
+                        </div>
+                        <input
+                          type="range"
+                          min="0"
+                          max="100"
+                          value={drainage}
+                          onChange={(e) => setDrainage(parseInt(e.target.value))}
+                        />
+                        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
+                          <span>Blocked (0%)</span>
+                          <span>Clear Channels (100%)</span>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-
-                  <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '16px', textAlign: 'left' }}>
-                    Adjust real-time rainfall levels, high tide tables, and drainage blockages to recalculate inundation risk on the map.
-                  </p>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
-                        <span>Rainfall Intensity</span>
-                        <span style={{ color: 'var(--accent-blue)' }}>{rainfall} mm/hr</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="150"
-                        value={rainfall}
-                        onChange={(e) => setRainfall(parseInt(e.target.value))}
-                      />
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
-                        <span>Drizzle (0mm)</span>
-                        <span>Cloudburst (150mm)</span>
-                      </div>
+                ) : (
+                  <div className="glass-panel" style={{ padding: '20px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '16px' }}>
+                      <Radio style={{ color: 'var(--accent-green)', animation: 'pulse-ring 2s infinite' }} size={18} />
+                      <h3 style={{ fontSize: '1rem', fontWeight: 700 }}>Telemetry Sensor Status</h3>
                     </div>
-
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
-                        <span>High Tide Height</span>
-                        <span style={{ color: 'var(--accent-purple)' }}>{tide} meters</span>
+                    <p style={{ fontSize: '0.75rem', color: '#64748B', marginBottom: '16px', textAlign: 'left' }}>
+                      Read-only real-time metrics parsed from Municipal Rain Gauges and creek level gauges.
+                    </p>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px', textAlign: 'left' }}>
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                        <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Precipitation telemetry</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-blue)', marginTop: '2px' }}>{rainfall} mm/hr</div>
                       </div>
-                      <input
-                        type="range"
-                        min="1.0"
-                        max="6.0"
-                        step="0.1"
-                        value={tide}
-                        onChange={(e) => setTide(parseFloat(e.target.value))}
-                      />
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
-                        <span>Low Tide (1.0m)</span>
-                        <span>Extreme Surge (6.0m)</span>
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                        <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Astronomical surge gauge</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-purple)', marginTop: '2px' }}>{tide} meters</div>
                       </div>
-                    </div>
-
-                    <div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600, marginBottom: '6px' }}>
-                        <span>Drainage Efficiency</span>
-                        <span style={{ color: drainage < 50 ? 'var(--accent-red)' : 'var(--accent-green)' }}>{drainage}%</span>
-                      </div>
-                      <input
-                        type="range"
-                        min="0"
-                        max="100"
-                        value={drainage}
-                        onChange={(e) => setDrainage(parseInt(e.target.value))}
-                      />
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.65rem', color: '#64748B', marginTop: '4px' }}>
-                        <span>Blocked (0%)</span>
-                        <span>Clear Channels (100%)</span>
+                      <div style={{ background: 'rgba(255,255,255,0.01)', padding: '12px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                        <div style={{ fontSize: '0.7rem', color: '#64748B' }}>Sewer gate efficiency</div>
+                        <div style={{ fontSize: '1rem', fontWeight: 700, color: 'var(--accent-green)', marginTop: '2px' }}>{drainage}%</div>
                       </div>
                     </div>
                   </div>
-                </div>
+                )}
 
                 {/* Live SOS Queue */}
                 <div className="glass-panel" style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
@@ -472,28 +499,29 @@ function App() {
                         </div>
 
                         {ticket.status === 'PENDING' ? (
-                          <button
-                            onClick={() => {
-                              if (!isAdmin) {
-                                alert("Security Notice: Analyst profile does not hold database writing credentials. Please log in as an administrator to dispatch active vessels.");
-                                return;
-                              }
-                              handleDispatch(ticket.id);
-                            }}
-                            className={isAdmin ? "btn-primary" : "btn-secondary"}
-                            style={{
-                              padding: '8px 12px',
+                          isAdmin ? (
+                            <button
+                              onClick={() => handleDispatch(ticket.id)}
+                              className="btn-primary"
+                              style={{ padding: '8px 12px', fontSize: '0.75rem', width: '100%', background: 'var(--gradient-primary)' }}
+                              disabled={dispatchingId !== null}
+                            >
+                              Assign Nearest NGO Boat
+                            </button>
+                          ) : (
+                            <div style={{
+                              padding: '10px',
+                              textAlign: 'center',
+                              background: 'rgba(255,255,255,0.02)',
+                              border: '1px dashed rgba(255,255,255,0.08)',
+                              borderRadius: '6px',
+                              color: '#64748B',
                               fontSize: '0.75rem',
-                              width: '100%',
-                              background: isAdmin ? 'var(--gradient-primary)' : 'rgba(255,255,255,0.02)',
-                              color: isAdmin ? 'white' : '#64748B',
-                              cursor: isAdmin ? 'pointer' : 'not-allowed',
-                              border: isAdmin ? 'none' : '1px dashed rgba(255,255,255,0.1)'
-                            }}
-                            disabled={dispatchingId !== null}
-                          >
-                            {isAdmin ? 'Assign Nearest NGO Boat' : 'Assign Boat (Admin Only)'}
-                          </button>
+                              fontWeight: 500
+                            }}>
+                              Awaiting Administrative Dispatch
+                            </div>
+                          )
                         ) : ticket.status === 'DISPATCHING' ? (
                           <div style={{
                             display: 'flex',
