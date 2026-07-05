@@ -208,20 +208,19 @@
 
 ---
 
-## 🏆 SLIDE 7: CONCLUSION & SELECTION Q&A DEFENSE
+## 🏆 SLIDE 7: CONCLUSION & SELECTION PITCH
 
 > **"FloodPulse Mumbai doesn't just display data; it triggers preemptive action."**
 
-### 💡 JUDGES Q&A CHEAT SHEET (How to defend the project)
+### 📝 Core Slide Content
+* **The Final Call to Action:** FloodPulse Mumbai represents the ultimate configuration of Smart Infrastructure and Community Social Impact.
+* **Judging Board Submission Details:**
+  * **Build Integrity:** 100% compiled.
+  * **Deploy Stability:** Live production URL active with bypass logins.
+  * **Verification Logs:** All logs, telemetry registers, and dispatch systems are fully tested and functional.
 
-#### ❓ Q1: How does the NLP Silo Parser work without heavy AI APIs?
-* **🗣️ DEFENSE ANSWER:** *"We utilize optimized regular expression (regex) capture arrays to parse raw citizen text for key numbers and landmark entities. This means our NLP parser runs 100% locally inside the user's browser in milliseconds. It does not require costly API connections or cloud dependencies, maintaining zero cost and full offline resilience."*
-
-#### ❓ Q2: What happens if standard analysts try to trigger emergency overrides?
-* **🗣️ DEFENSE ANSWER:** *"Our platform enforces strict **Role-Based Access Controls (RBAC)**. The crisis level dropdown, user directory controls, boat dispatch triggers, and NLP merge buttons are completely hidden on standard analyst viewports. If bypassed, the system triggers security alerts blocking the actions, ensuring complete command hierarchy."*
-
-#### ❓ Q3: How do you verify the coordinates on the SVG Map?
-* **🗣️ DEFENSE ANSWER:** *"We mapped Mumbai's ward boundaries directly to standardized SVG vector paths. This coordinates model correlates with municipal ward IDs. When a citizen's address matches a ward, the hover overlay instantly references that ward's elevation profile to estimate submergence levels."*
+### 🗣️ SPEAKER SCRIPT (What to say)
+> *"To conclude, FloodPulse Mumbai is not just a dashboard—it is an active, live command framework that triggers preemptive rescue dispatches to save lives. It is robust, cost-effective, compiled, and ready for deployment immediately. Thank you for your time, and I am now ready to present the live interface demonstration."*
 
 ---
 *Developed for The Blueprint Ideathon. Submission by Thakur College of Engineering and Technology (TCET) Rotaract Club.*
