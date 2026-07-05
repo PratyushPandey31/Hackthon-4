@@ -525,6 +525,44 @@ function App() {
                   </div>
                 </div>
               </div>
+
+              {/* Weather Telemetry KPI Card */}
+              <div className={getCardClass('card-stat-weather', 'glass-panel stat-card')} style={{ cursor: 'pointer' }} onClick={() => {
+                setSelectedCardId('card-stat-weather');
+                setActiveTab('weather');
+              }}>
+                <div className="stat-header">
+                  <span>WEATHER MET STATS</span>
+                  <Waves size={18} style={{ color: getRainfallStatus(rainfall).color }} />
+                </div>
+                <div>
+                  <div className="stat-value" style={{ color: getRainfallStatus(rainfall).color }}>
+                    {rainfall} mm/hr
+                  </div>
+                  <div className="stat-footer">
+                    <span>Current warning: <strong style={{ color: getRainfallStatus(rainfall).color }}>{getRainfallStatus(rainfall).text}</strong></span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Live Log Ticker KPI Card */}
+              <div className={getCardClass('card-stat-logs', 'glass-panel stat-card')} style={{ cursor: 'pointer' }} onClick={() => {
+                setSelectedCardId('card-stat-logs');
+                setActiveTab('logs');
+              }}>
+                <div className="stat-header">
+                  <span>AUDIT DIAGNOSTICS</span>
+                  <Clock size={18} style={{ color: 'var(--accent-cyan)' }} />
+                </div>
+                <div>
+                  <div className="stat-value" style={{ fontSize: '0.95rem', color: '#10B981', fontFamily: 'monospace', letterSpacing: '-0.02em', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis', marginTop: '12px', marginBottom: '14px' }}>
+                    {systemLogs[0] ? systemLogs[0].split(' - ')[1] || systemLogs[0] : 'STABLE'}
+                  </div>
+                  <div className="stat-footer">
+                    <span>Audit logs synced. Tap to open kernel console.</span>
+                  </div>
+                </div>
+              </div>
             </div>
 
             {/* Dashboard Content Grid */}
