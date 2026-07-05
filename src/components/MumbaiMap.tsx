@@ -18,6 +18,8 @@ interface MumbaiMapProps {
   drainage: number; // efficiency %
   onWardSelect: (ward: any) => void;
   selectedWardId: string | null;
+  className?: string;
+  onClick?: () => void;
 }
 
 const WARDS: WardData[] = [
@@ -248,7 +250,9 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
   tide,
   drainage,
   onWardSelect,
-  selectedWardId
+  selectedWardId,
+  className,
+  onClick
 }) => {
   const [hoveredWard, setHoveredWard] = useState<WardData | null>(null);
 
@@ -299,7 +303,7 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
 
 
   return (
-    <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+    <div className={className || "glass-panel"} onClick={onClick} style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: '100%' }}>
       <div style={{ display: 'flex', justifyContent: 'between', alignItems: 'center', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
           <Compass className="logo-rotate" style={{ color: 'var(--accent-cyan)' }} size={20} />

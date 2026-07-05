@@ -96,6 +96,7 @@ function App() {
   const [tide, setTide] = useState(2.8); // meters
   const [drainage] = useState(75); // efficiency %
   const [activeTab, setActiveTab] = useState<string>('dashboard');
+  const [selectedCardId, setSelectedCardId] = useState<string | null>(null);
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
   const [sosRequests, setSosRequests] = useState<SOSTicket[]>(INITIAL_SOS_TICKETS);
   const [dispatchingId, setDispatchingId] = useState<number | null>(null);
@@ -131,6 +132,10 @@ function App() {
     return { text: 'HIGH TIDE WARNING', color: '#EF4444', bg: 'rgba(239,68,68,0.1)', border: 'rgba(239,68,68,0.3)' };
   };
 
+  const getCardClass = (id: string, baseClass = 'glass-panel') => {
+    return `${baseClass} ${selectedCardId === id ? 'active-hollow-card' : ''}`;
+  };
+
   // Check login session and register click hollow listener on mount
   useEffect(() => {
     const loggedUser = localStorage.getItem('floodpulse_active_user');
@@ -142,19 +147,8 @@ function App() {
 
     const handleGlobalClick = (e: MouseEvent) => {
       const target = e.target as HTMLElement;
-      const card = target.closest('.glass-panel');
-      if (card) {
-        // Remove active class from all other cards
-        document.querySelectorAll('.glass-panel').forEach(el => {
-          if (el !== card) el.classList.remove('active-hollow-card');
-        });
-        // Toggle on this card
-        card.classList.toggle('active-hollow-card');
-      } else {
-        // Clicked outside, clear active cards
-        document.querySelectorAll('.glass-panel').forEach(el => {
-          el.classList.remove('active-hollow-card');
-        });
+      if (!target.closest('.glass-panel')) {
+        setSelectedCardId(null);
       }
     };
 
@@ -476,7 +470,7 @@ function App() {
             
             {/* Real-time KPI Statistics */}
             <div className="stats-grid">
-              <div className="glass-panel stat-card glass-panel-glow">
+              <div className={getCardClass('card-stat-sos', 'glass-panel stat-card')} onClick={() => setSelectedCardId('card-stat-sos')}>
                 <div className="stat-header">
                   <span>ACTIVE SOS DISPATCHES</span>
                   <AlertTriangle size={18} style={{ color: activeSOSCount > 0 ? 'var(--accent-red)' : 'var(--accent-green)' }} />
@@ -491,7 +485,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="glass-panel stat-card">
+              <div className={getCardClass('card-stat-boats', 'glass-panel stat-card')} onClick={() => setSelectedCardId('card-stat-boats')}>
                 <div className="stat-header">
                   <span>NGO VESSELS DEPLOYED</span>
                   <Ship size={18} style={{ color: 'var(--accent-blue)' }} />
@@ -504,7 +498,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="glass-panel stat-card">
+              <div className={getCardClass('card-stat-depth', 'glass-panel stat-card')} onClick={() => setSelectedCardId('card-stat-depth')}>
                 <div className="stat-header">
                   <span>AVG SUBMERGENCE DEPTH</span>
                   <Waves size={18} style={{ color: averageSubmergence > 2.0 ? 'var(--accent-yellow)' : 'var(--accent-cyan)' }} />
@@ -517,7 +511,7 @@ function App() {
                 </div>
               </div>
 
-              <div className="glass-panel stat-card">
+              <div className={getCardClass('card-stat-transit', 'glass-panel stat-card')} onClick={() => setSelectedCardId('card-stat-transit')}>
                 <div className="stat-header">
                   <span>RAILWAY TRANSIT NET</span>
                   <Train size={18} style={{ color: railway.color }} />
@@ -536,23 +530,25 @@ function App() {
             {/* Dashboard Content Grid */}
             <div className="dashboard-grid">
               
-              {/* GIS Map visualization */}
-              <div>
-                <MumbaiMap
-                  rainfall={crisisLevel === 'RED_ALERT' ? Math.min(150, rainfall + 30) : rainfall}
-                  tide={crisisLevel === 'RED_ALERT' ? Math.min(6.0, tide + 1.2) : tide}
-                  drainage={crisisLevel === 'RED_ALERT' ? Math.max(0, drainage - 20) : drainage}
-                  selectedWardId={selectedWardId}
-                  onWardSelect={(ward) => setSelectedWardId(ward.id)}
-                />
-              </div>
+               {/* GIS Map visualization */}
+               <div style={{ height: '100%' }}>
+                 <MumbaiMap
+                   rainfall={crisisLevel === 'RED_ALERT' ? Math.min(150, rainfall + 30) : rainfall}
+                   tide={crisisLevel === 'RED_ALERT' ? Math.min(6.0, tide + 1.2) : tide}
+                   drainage={crisisLevel === 'RED_ALERT' ? Math.max(0, drainage - 20) : drainage}
+                   selectedWardId={selectedWardId}
+                   onWardSelect={(ward) => setSelectedWardId(ward.id)}
+                   className={getCardClass('card-gis-map')}
+                   onClick={() => setSelectedCardId('card-gis-map')}
+                 />
+               </div>
 
               {/* Controls and SOS queue */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 
                 {/* ENVIRONMENTAL CONTROLS */}
                 {isAdmin ? (
-                  <div className="glass-panel" style={{ padding: '20px' }}>
+                  <div className={getCardClass('card-env-controls')} onClick={() => setSelectedCardId('card-env-controls')} style={{ padding: '20px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Settings style={{ color: 'var(--accent-cyan)' }} size={18} />
@@ -618,7 +614,7 @@ function App() {
                     </div>
                   </div>
                 ) : (
-                  <div className="glass-panel" style={{ padding: '20px' }}>
+                  <div className={getCardClass('card-env-controls')} onClick={() => setSelectedCardId('card-env-controls')} style={{ padding: '20px' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         <Radio style={{ color: 'var(--accent-green)', animation: 'pulse-ring 2s infinite' }} size={18} />
@@ -646,7 +642,7 @@ function App() {
                 )}
 
                 {/* EMERGENCY SOS REQUESTS */}
-                <div className="glass-panel" style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <div className={getCardClass('card-sos-requests')} onClick={() => setSelectedCardId('card-sos-requests')} style={{ padding: '20px', flex: 1, display: 'flex', flexDirection: 'column' }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                       <Radio style={{ color: 'var(--accent-red)', animation: 'pulse-ring 2s infinite' }} size={18} />
