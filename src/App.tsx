@@ -1218,7 +1218,7 @@ function App() {
               </div>
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '1.5fr 1fr' : '1fr', gap: '24px' }}>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr 0.8fr', gap: '24px' }}>
               {/* Broadcast Alert List */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#94A3B8', margin: '0 0 4px', letterSpacing: '0.05em' }}>ACTIVE REGIONAL FLOOD WARNINGS</h3>
@@ -1270,60 +1270,104 @@ function App() {
                 </div>
               </div>
 
-              {/* Broadcast Alert Creator Form (Admin Only) */}
-              {isAdmin && (
-                <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', background: 'rgba(4, 7, 18, 0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '10px' }}>
-                    <Megaphone style={{ color: 'var(--accent-cyan)' }} size={18} />
-                    <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'white', margin: 0, letterSpacing: '0.05em' }}>DISPATCH STRATEGIC ALERT</h3>
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
-                    <label style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 600 }}>Strategic Broadcast Message</label>
-                    <input
-                      id="custom-alert-text"
-                      type="text"
-                      className="input-field"
-                      placeholder="Enter warning/evacuation broadcast details..."
-                      style={{ fontSize: '0.85rem' }}
-                    />
-                  </div>
-
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
-                    <label style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 600 }}>Tactical Threat Level</label>
-                    <select id="custom-alert-level" className="input-field" style={{ cursor: 'pointer', fontSize: '0.85rem' }}>
-                      <option value="INFO">INFO (Normal Advisory)</option>
-                      <option value="WARNING">WARNING (Active Risk Monitoring)</option>
-                      <option value="CRITICAL">CRITICAL (Immediate Evacuation Order)</option>
-                    </select>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      const textInput = document.getElementById('custom-alert-text') as HTMLInputElement;
-                      const levelSelect = document.getElementById('custom-alert-level') as HTMLSelectElement;
-                      if (!textInput || !textInput.value) {
-                        alert("Alert message cannot be blank!");
-                        return;
-                      }
-                      const newAlert = {
-                        id: Date.now(),
-                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
-                        type: levelSelect.value,
-                        text: textInput.value
-                      };
-                      setBroadcastAlerts(prev => [newAlert, ...prev]);
-                      addSystemLog(`Broadcasted strategic alert: "${textInput.value}"`);
-                      textInput.value = '';
-                      alert("Strategic Alert broadcasted successfully!");
-                    }}
-                    className="btn-primary"
-                    style={{ background: 'var(--gradient-primary)', border: 'none', padding: '12px', fontSize: '0.85rem', cursor: 'pointer' }}
-                  >
-                    Broadcast Warning Signal
-                  </button>
+              {/* Safe Evacuation Shelters Status */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
+                <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: '#94A3B8', margin: '0 0 4px', letterSpacing: '0.05em' }}>SAFE EVACUATION SHELTERS</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                  {[
+                    { name: 'Kurla High School Shelter', capacity: '120 / 300 Beds', status: 'OPEN', color: 'var(--accent-green)', risk: 'Low Risk zone' },
+                    { name: 'Dharavi Sports Complex', capacity: '480 / 500 Beds', status: 'NEAR CAPACITY', color: 'var(--accent-yellow)', risk: 'Mid Risk zone' },
+                    { name: 'Sion Staging Shelter', capacity: '350 / 350 Beds', status: 'FULL / CLOSED', color: 'var(--accent-red)', risk: 'High Surge zone' },
+                    { name: 'Bandra Reclamation Camp', capacity: '82 / 400 Beds', status: 'OPEN', color: 'var(--accent-green)', risk: 'Safe Coastal zone' }
+                  ].map((shelter, idx) => (
+                    <div key={idx} className="glass-panel" style={{ padding: '12px 14px', background: 'rgba(4, 7, 18, 0.3)', border: '1px solid rgba(255,255,255,0.04)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', textAlign: 'left' }}>
+                      <div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white' }}>{shelter.name}</div>
+                        <div style={{ fontSize: '0.65rem', color: '#64748B', marginTop: '2px' }}>{shelter.risk} • Deployed volunteer crews</div>
+                      </div>
+                      <div style={{ textAlign: 'right' }}>
+                        <span style={{ fontSize: '0.6rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', background: 'rgba(255,255,255,0.03)', color: shelter.color, display: 'inline-block', marginBottom: '4px' }}>{shelter.status}</span>
+                        <div style={{ fontSize: '0.7rem', color: '#94A3B8', fontWeight: 'bold' }}>{shelter.capacity}</div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              )}
+              </div>
+
+              {/* Broadcast Alert Creator Form (Admin Only) & Quick Helplines */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {isAdmin && (
+                  <div className="glass-panel" style={{ padding: '20px', display: 'flex', flexDirection: 'column', gap: '16px', background: 'rgba(4, 7, 18, 0.4)', border: '1px solid rgba(255,255,255,0.06)' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px', borderBottom: '1px solid rgba(255,255,255,0.06)', paddingBottom: '10px' }}>
+                      <Megaphone style={{ color: 'var(--accent-cyan)' }} size={18} />
+                      <h3 style={{ fontSize: '0.9rem', fontWeight: 800, color: 'white', margin: 0, letterSpacing: '0.05em' }}>DISPATCH STRATEGIC ALERT</h3>
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
+                      <label style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 600 }}>Strategic Broadcast Message</label>
+                      <input
+                        id="custom-alert-text"
+                        type="text"
+                        className="input-field"
+                        placeholder="Enter warning/evacuation broadcast details..."
+                        style={{ fontSize: '0.85rem' }}
+                      />
+                    </div>
+
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', textAlign: 'left' }}>
+                      <label style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 600 }}>Tactical Threat Level</label>
+                      <select id="custom-alert-level" className="input-field" style={{ cursor: 'pointer', fontSize: '0.85rem' }}>
+                        <option value="INFO">INFO (Normal Advisory)</option>
+                        <option value="WARNING">WARNING (Active Risk Monitoring)</option>
+                        <option value="CRITICAL">CRITICAL (Immediate Evacuation Order)</option>
+                      </select>
+                    </div>
+
+                    <button
+                      onClick={() => {
+                        const textInput = document.getElementById('custom-alert-text') as HTMLInputElement;
+                        const levelSelect = document.getElementById('custom-alert-level') as HTMLSelectElement;
+                        if (!textInput || !textInput.value) {
+                          alert("Alert message cannot be blank!");
+                          return;
+                        }
+                        const newAlert = {
+                          id: Date.now(),
+                          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                          type: levelSelect.value,
+                          text: textInput.value
+                        };
+                        setBroadcastAlerts(prev => [newAlert, ...prev]);
+                        addSystemLog(`Broadcasted strategic alert: "${textInput.value}"`);
+                        textInput.value = '';
+                        alert("Strategic Alert broadcasted successfully!");
+                      }}
+                      className="btn-primary"
+                      style={{ background: 'var(--gradient-primary)', border: 'none', padding: '12px', fontSize: '0.85rem', cursor: 'pointer' }}
+                    >
+                      Broadcast Warning Signal
+                    </button>
+                  </div>
+                )}
+
+                {/* Quick Dial Helplines */}
+                <div className="glass-panel" style={{ padding: '20px', background: 'rgba(10, 18, 30, 0.15)', textAlign: 'left' }}>
+                  <h4 style={{ fontSize: '0.85rem', fontWeight: 800, color: 'white', marginBottom: '12px', letterSpacing: '0.05em' }}>EMERGENCY CONTACTS HUB</h4>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                    {[
+                      { name: 'Disaster Management Cell', number: '1916' },
+                      { name: 'Railways Emergency Helpline', number: '138' },
+                      { name: 'National Disaster Response (NDRF)', number: '022-26836206' },
+                      { name: 'Indian Coast Guard Command', number: '1548' }
+                    ].map((h, idx) => (
+                      <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.01)', padding: '8px 10px', borderRadius: '4px', border: '1px solid rgba(255,255,255,0.02)' }}>
+                        <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>{h.name}</span>
+                        <a href={`tel:${h.number}`} style={{ color: 'var(--accent-cyan)', fontWeight: 'bold', textDecoration: 'none', fontFamily: 'monospace', fontSize: '0.8rem' }}>{h.number}</a>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
