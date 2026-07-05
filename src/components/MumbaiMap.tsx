@@ -146,15 +146,7 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
     }
   };
 
-  const getSeverityBgColor = (severity: string, isHovered: boolean) => {
-    const opacity = isHovered ? '0.4' : '0.2';
-    switch (severity) {
-      case 'CRITICAL': return `rgba(239, 68, 68, ${opacity})`;
-      case 'WARNING': return `rgba(245, 158, 11, ${opacity})`;
-      case 'ALERT': return `rgba(0, 210, 255, ${opacity})`;
-      default: return `rgba(16, 185, 129, ${opacity})`;
-    }
-  };
+
 
   return (
     <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: '100%' }}>
@@ -209,6 +201,68 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
           </div>
 
           <svg width="280" height="520" viewBox="0 0 300 550" style={{ cursor: 'pointer' }}>
+            <defs>
+              {/* Technical Grid Pattern */}
+              <pattern id="mapGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255, 255, 255, 0.025)" strokeWidth="0.8" />
+              </pattern>
+              
+              {/* Neon Glow Filter */}
+              <filter id="neonGlow" x="-20%" y="-20%" width="140%" height="140%">
+                <feGaussianBlur stdDeviation="4" result="blur" />
+                <feComponentTransfer in="blur" result="glow">
+                  <feFuncA type="linear" slope="1.5"/>
+                </feComponentTransfer>
+                <feMerge>
+                  <feMergeNode in="glow" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+
+              {/* SAFE Gradients */}
+              <linearGradient id="safeGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(16, 185, 129, 0.12)" />
+                <stop offset="100%" stopColor="rgba(5, 150, 105, 0.03)" />
+              </linearGradient>
+              <linearGradient id="safeGradientHover" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(16, 185, 129, 0.35)" />
+                <stop offset="100%" stopColor="rgba(5, 150, 105, 0.1)" />
+              </linearGradient>
+
+              {/* ALERT Gradients */}
+              <linearGradient id="alertGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(0, 210, 255, 0.15)" />
+                <stop offset="100%" stopColor="rgba(0, 100, 250, 0.04)" />
+              </linearGradient>
+              <linearGradient id="alertGradientHover" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(0, 210, 255, 0.4)" />
+                <stop offset="100%" stopColor="rgba(0, 100, 250, 0.12)" />
+              </linearGradient>
+
+              {/* WARNING Gradients */}
+              <linearGradient id="warningGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(245, 158, 11, 0.18)" />
+                <stop offset="100%" stopColor="rgba(217, 119, 6, 0.05)" />
+              </linearGradient>
+              <linearGradient id="warningGradientHover" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(245, 158, 11, 0.45)" />
+                <stop offset="100%" stopColor="rgba(217, 119, 6, 0.15)" />
+              </linearGradient>
+
+              {/* CRITICAL Gradients */}
+              <linearGradient id="criticalGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(239, 68, 68, 0.22)" />
+                <stop offset="100%" stopColor="rgba(220, 38, 38, 0.06)" />
+              </linearGradient>
+              <linearGradient id="criticalGradientHover" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stopColor="rgba(239, 68, 68, 0.5)" />
+                <stop offset="100%" stopColor="rgba(220, 38, 38, 0.18)" />
+              </linearGradient>
+            </defs>
+
+            {/* Background Grid */}
+            <rect width="300" height="550" fill="url(#mapGrid)" pointerEvents="none" />
+
             {/* SVG Wards */}
             {WARDS.map((ward) => {
               const status = calculateWaterLogging(ward);
@@ -225,12 +279,12 @@ export const MumbaiMap: React.FC<MumbaiMapProps> = ({
                 >
                   <path
                     d={ward.svgPath}
-                    fill={getSeverityBgColor(status.severity, isHovered || isSelected)}
+                    fill={`url(#${status.severity.toLowerCase()}Gradient${isHovered || isSelected ? 'Hover' : ''})`}
                     stroke={isSelected ? '#FFFFFF' : isHovered ? 'var(--accent-cyan)' : color}
                     strokeWidth={isSelected ? '2.5' : isHovered ? '2' : '1.5'}
+                    filter={isSelected || isHovered ? "url(#neonGlow)" : "none"}
                     style={{
-                      transition: 'all 0.2s ease',
-                      filter: isSelected || isHovered ? `drop-shadow(0 0 8px ${color})` : 'none'
+                      transition: 'all 0.2s ease'
                     }}
                   />
                   {/* Glowing Pulse Dot for Active Rescue Boats if Critical */}
