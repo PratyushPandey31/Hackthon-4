@@ -347,161 +347,164 @@ function App() {
       {/* Header bar */}
       <header className="glass-panel" style={{
         margin: '16px',
-        padding: '12px 24px',
+        padding: '16px 24px',
         display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: 'column',
+        gap: '14px',
         borderBottom: '1px solid var(--border-light)',
         borderRadius: '12px',
         position: 'sticky',
         top: '16px',
         zIndex: 10
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-          <RadarLogo size={36} />
-          <div>
-            <h1 style={{
-              fontSize: '1.2rem',
-              fontWeight: 800,
-              color: 'white',
-              letterSpacing: '-0.015em',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px',
-              margin: 0
-            }}>
-              <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>FLOODPULSE MUMBAI</span>
-              <span style={{ color: 'rgba(255,255,255,0.2)', fontWeight: 300 }}>|</span>
-              <span style={{ fontSize: '1.05rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.02em' }}>COMMAND CENTER</span>
-            </h1>
+        {/* Top row: Logo, Ticker, Profile info */}
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <RadarLogo size={36} />
+            <div>
+              <h1 style={{
+                fontSize: '1.2rem',
+                fontWeight: 800,
+                color: 'white',
+                letterSpacing: '-0.015em',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                margin: 0
+              }}>
+                <span style={{ background: 'var(--gradient-primary)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>FLOODPULSE MUMBAI</span>
+                <span style={{ color: 'rgba(255,255,255,0.2)', fontWeight: 300 }}>|</span>
+                <span style={{ fontSize: '1.05rem', color: '#94A3B8', fontWeight: 600, letterSpacing: '0.02em' }}>COMMAND CENTER</span>
+              </h1>
+            </div>
+          </div>
+
+          {/* Glowing Telemetry Wave Graphic from Mockup */}
+          <svg width="120" height="32" viewBox="0 0 120 32" style={{ opacity: 0.85, pointerEvents: 'none', marginLeft: 'auto', marginRight: '24px' }} className="desktop-only">
+            <defs>
+              <linearGradient id="headerWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#00D2FF" />
+                <stop offset="50%" stopColor="#9D4EDD" />
+                <stop offset="100%" stopColor="#FF007A" />
+              </linearGradient>
+              <filter id="headerWaveGlow">
+                <feGaussianBlur stdDeviation="1.5" result="blur" />
+                <feMerge>
+                  <feMergeNode in="blur" />
+                  <feMergeNode in="SourceGraphic" />
+                </feMerge>
+              </filter>
+            </defs>
+            <path d="M 0 25 Q 20 8 40 20 T 80 12 T 120 18" fill="none" stroke="url(#headerWaveGrad)" strokeWidth="2.2" strokeLinecap="round" filter="url(#headerWaveGlow)" />
+            <path d="M 0 16 Q 30 28 60 12 T 120 22" fill="none" stroke="rgba(0, 210, 255, 0.25)" strokeWidth="0.8" strokeDasharray="3,3" />
+          </svg>
+
+          {/* Profile info */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            {/* Admin Crisis Level Control */}
+            {isAdmin && (
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '8px' }}>
+                <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>CRISIS LEVEL:</span>
+                <select
+                  value={crisisLevel}
+                  onChange={(e) => handleCrisisChange(e.target.value as any)}
+                  className="input-field"
+                  style={{
+                    padding: '6px 12px',
+                    fontSize: '0.75rem',
+                    width: 'auto',
+                    background: crisisLevel === 'RED_ALERT' ? 'rgba(239, 68, 68, 0.15)' : crisisLevel === 'DRILL' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(255,255,255,0.03)',
+                    borderColor: crisisLevel === 'RED_ALERT' ? 'var(--accent-red)' : crisisLevel === 'DRILL' ? 'var(--accent-yellow)' : 'rgba(255,255,255,0.08)',
+                    color: crisisLevel === 'RED_ALERT' ? 'var(--accent-red)' : crisisLevel === 'DRILL' ? 'var(--accent-yellow)' : 'white',
+                    fontWeight: 600,
+                    cursor: 'pointer'
+                  }}
+                >
+                  <option value="NORMAL" style={{ background: '#0B0F19', color: 'white' }}>Normal</option>
+                  <option value="DRILL" style={{ background: '#0B0F19', color: 'var(--accent-yellow)' }}>Drill Mode</option>
+                  <option value="RED_ALERT" style={{ background: '#0B0F19', color: 'var(--accent-red)' }}>Red Alert</option>
+                </select>
+              </div>
+            )}
+
+            <div className="desktop-only" style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Active Commander</div>
+              <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>{user}</div>
+            </div>
+            <button onClick={handleLogout} className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '8px' }}>
+              <LogOut size={16} />
+            </button>
           </div>
         </div>
 
-        {/* Tab switcher */}
-        <nav style={{ display: 'flex', gap: '4px', overflowX: 'auto', maxWidth: '60%' }}>
-          <button
-            onClick={() => setActiveTab('dashboard')}
-            className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
-          >
-            Operations Room {activeTab === 'dashboard' && <span style={{ fontSize: '0.65rem', color: '#00F5D4', marginLeft: '4px', fontWeight: 700 }}>(Active)</span>}
-          </button>
-          
-          <button
-            onClick={() => setActiveTab('unifier')}
-            className={`tab-btn ${activeTab === 'unifier' ? 'active' : ''}`}
-          >
-            Data Silo Unifier
-          </button>
-
-          <button
-            onClick={() => setActiveTab('resources')}
-            className={`tab-btn ${activeTab === 'resources' ? 'active' : ''}`}
-          >
-            Resources
-          </button>
-          <button
-            onClick={() => setActiveTab('weather')}
-            className={`tab-btn ${activeTab === 'weather' ? 'active' : ''}`}
-          >
-            Weather
-          </button>
-          <button
-            onClick={() => setActiveTab('alerts')}
-            className={`tab-btn ${activeTab === 'alerts' ? 'active' : ''}`}
-          >
-            Alerts
-          </button>
-          <button
-            onClick={() => setActiveTab('logs')}
-            className={`tab-btn ${activeTab === 'logs' ? 'active' : ''}`}
-          >
-            Logs
-          </button>
-          <button
-            onClick={() => setActiveTab('analytics')}
-            className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
-          >
-            Analytics
-          </button>
-
-          {/* Extra tabs for PDF/PPT documentation */}
-          <button
-            onClick={() => setActiveTab('pitch')}
-            className={`tab-btn ${activeTab === 'pitch' ? 'active' : ''}`}
-          >
-            Pitch Deck
-          </button>
-          <button
-            onClick={() => setActiveTab('report')}
-            className={`tab-btn ${activeTab === 'report' ? 'active' : ''}`}
-          >
-            Proposal Report
-          </button>
-          {isAdmin && (
+        {/* Dedicated Bottom row: Wide Navigation Bar switcher */}
+        <div style={{ width: '100%', borderTop: '1px solid rgba(255, 255, 255, 0.05)', paddingTop: '10px' }}>
+          <nav style={{ display: 'flex', gap: '8px', flexWrap: 'wrap', width: '100%' }}>
             <button
-              onClick={() => setActiveTab('users')}
-              className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => setActiveTab('dashboard')}
+              className={`tab-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
             >
-              Analyst Registry
+              Operations Room {activeTab === 'dashboard' && <span style={{ fontSize: '0.65rem', color: '#00F5D4', marginLeft: '4px', fontWeight: 700 }}>(Active)</span>}
             </button>
-          )}
-        </nav>
+            
+            <button
+              onClick={() => setActiveTab('unifier')}
+              className={`tab-btn ${activeTab === 'unifier' ? 'active' : ''}`}
+            >
+              Data Silo Unifier
+            </button>
 
-        {/* Glowing Telemetry Wave Graphic from Mockup */}
-        <svg width="120" height="32" viewBox="0 0 120 32" style={{ opacity: 0.85, pointerEvents: 'none', marginLeft: 'auto', marginRight: '16px' }} className="desktop-only">
-          <defs>
-            <linearGradient id="headerWaveGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-              <stop offset="0%" stopColor="#00D2FF" />
-              <stop offset="50%" stopColor="#9D4EDD" />
-              <stop offset="100%" stopColor="#FF007A" />
-            </linearGradient>
-            <filter id="headerWaveGlow">
-              <feGaussianBlur stdDeviation="1.5" result="blur" />
-              <feMerge>
-                <feMergeNode in="blur" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
-          <path d="M 0 25 Q 20 8 40 20 T 80 12 T 120 18" fill="none" stroke="url(#headerWaveGrad)" strokeWidth="2.2" strokeLinecap="round" filter="url(#headerWaveGlow)" />
-          <path d="M 0 16 Q 30 28 60 12 T 120 22" fill="none" stroke="rgba(0, 210, 255, 0.25)" strokeWidth="0.8" strokeDasharray="3,3" />
-        </svg>
-
-        {/* Profile info */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          {/* Admin Crisis Level Control */}
-          {isAdmin && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginRight: '8px' }}>
-              <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>CRISIS LEVEL:</span>
-              <select
-                value={crisisLevel}
-                onChange={(e) => handleCrisisChange(e.target.value as any)}
-                className="input-field"
-                style={{
-                  padding: '6px 12px',
-                  fontSize: '0.75rem',
-                  width: 'auto',
-                  background: crisisLevel === 'RED_ALERT' ? 'rgba(239, 68, 68, 0.15)' : crisisLevel === 'DRILL' ? 'rgba(245, 158, 11, 0.15)' : 'rgba(255,255,255,0.03)',
-                  borderColor: crisisLevel === 'RED_ALERT' ? 'var(--accent-red)' : crisisLevel === 'DRILL' ? 'var(--accent-yellow)' : 'rgba(255,255,255,0.08)',
-                  color: crisisLevel === 'RED_ALERT' ? 'var(--accent-red)' : crisisLevel === 'DRILL' ? 'var(--accent-yellow)' : 'white',
-                  fontWeight: 600,
-                  cursor: 'pointer'
-                }}
+            <button
+              onClick={() => setActiveTab('resources')}
+              className={`tab-btn ${activeTab === 'resources' ? 'active' : ''}`}
+            >
+              Resources
+            </button>
+            <button
+              onClick={() => setActiveTab('weather')}
+              className={`tab-btn ${activeTab === 'weather' ? 'active' : ''}`}
+            >
+              Weather
+            </button>
+            <button
+              onClick={() => setActiveTab('alerts')}
+              className={`tab-btn ${activeTab === 'alerts' ? 'active' : ''}`}
+            >
+              Alerts
+            </button>
+            <button
+              onClick={() => setActiveTab('logs')}
+              className={`tab-btn ${activeTab === 'logs' ? 'active' : ''}`}
+            >
+              Logs
+            </button>
+            <button
+              onClick={() => setActiveTab('analytics')}
+              className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
+            >
+              Analytics
+            </button>
+            <button
+              onClick={() => setActiveTab('pitch')}
+              className={`tab-btn ${activeTab === 'pitch' ? 'active' : ''}`}
+            >
+              Pitch Deck
+            </button>
+            <button
+              onClick={() => setActiveTab('report')}
+              className={`tab-btn ${activeTab === 'report' ? 'active' : ''}`}
+            >
+              Proposal Report
+            </button>
+            {isAdmin && (
+              <button
+                onClick={() => setActiveTab('users')}
+                className={`tab-btn ${activeTab === 'users' ? 'active' : ''}`}
               >
-                <option value="NORMAL" style={{ background: '#0B0F19', color: 'white' }}>Normal</option>
-                <option value="DRILL" style={{ background: '#0B0F19', color: 'var(--accent-yellow)' }}>Drill Mode</option>
-                <option value="RED_ALERT" style={{ background: '#0B0F19', color: 'var(--accent-red)' }}>Red Alert</option>
-              </select>
-            </div>
-          )}
-
-          <div className="desktop-only" style={{ textAlign: 'right' }}>
-            <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Active Commander</div>
-            <div style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--accent-cyan)' }}>{user}</div>
-          </div>
-          <button onClick={handleLogout} className="btn-secondary" style={{ padding: '8px 12px', borderRadius: '8px' }}>
-            <LogOut size={16} />
-          </button>
+                Analyst Registry
+              </button>
+            )}
+          </nav>
         </div>
       </header>
 
