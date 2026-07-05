@@ -95,11 +95,28 @@ function App() {
   const [rainfall, setRainfall] = useState(45); // mm/hr
   const [tide, setTide] = useState(2.8); // meters
   const [drainage] = useState(75); // efficiency %
-  const [activeTab, setActiveTab] = useState<'dashboard' | 'unifier' | 'pitch' | 'report' | 'users'>('dashboard');
+  const [activeTab, setActiveTab] = useState<string>('dashboard');
   const [selectedWardId, setSelectedWardId] = useState<string | null>(null);
   const [sosRequests, setSosRequests] = useState<SOSTicket[]>(INITIAL_SOS_TICKETS);
   const [dispatchingId, setDispatchingId] = useState<number | null>(null);
   const [crisisLevel, setCrisisLevel] = useState<'NORMAL' | 'DRILL' | 'RED_ALERT'>('NORMAL');
+
+  const [systemLogs, setSystemLogs] = useState<string[]>([
+    `[${new Date().toLocaleDateString()}] 14:05:22 - NGO dispatch vessels synced. 6 crews placed on standby.`,
+    `[${new Date().toLocaleDateString()}] 14:02:18 - Systems Integrity Check passed. 22 GIS wards loaded offline.`,
+    `[${new Date().toLocaleDateString()}] 14:02:15 - Active Commander admin@floodpulse.in logged in from secure terminal node.`
+  ]);
+
+  const [broadcastAlerts, setBroadcastAlerts] = useState<any[]>([
+    { id: 1, time: '14:15', type: 'CRITICAL', text: 'Dadar Subway completely flooded. Commuter traffic suspended.' },
+    { id: 2, time: '14:09', type: 'WARNING', text: 'Kurla West railway lines experiencing minor track flooding.' },
+    { id: 3, time: '14:02', type: 'INFO', text: 'Sluice drainage gates at Love Grove active at 100% efficiency.' }
+  ]);
+
+  const addSystemLog = (msg: string) => {
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    setSystemLogs(prev => [`[${new Date().toLocaleDateString()} ${time}] - ${msg}`, ...prev]);
+  };
 
   const getRainfallStatus = (val: number) => {
     if (val < 15) return { text: 'LIGHT DRIZZLE', color: '#10B981', bg: 'rgba(16,185,129,0.1)', border: 'rgba(16,185,129,0.3)' };
@@ -164,6 +181,7 @@ function App() {
       status: 'PENDING'
     };
     setSosRequests(prev => [ticket, ...prev]);
+    addSystemLog(`Parsed and merged volunteer SOS ticket for ${newSOS.location}`);
     setActiveTab('dashboard'); // Redirect to dashboard to see it
   };
 
@@ -175,6 +193,7 @@ function App() {
     setSosRequests(prev => prev.map(ticket => 
       ticket.id === ticketId ? { ...ticket, status: 'DISPATCHING' } : ticket
     ));
+    addSystemLog(`Initiated vessel dispatch sequence to ticket #${ticketId}`);
 
     // Simulate dispatch delay
     setTimeout(() => {
@@ -186,6 +205,7 @@ function App() {
           boatId: `TCET-BOAT-0${Math.floor(Math.random() * 5) + 3}`
         } : ticket
       ));
+      addSystemLog(`Vessel successfully assigned and enroute to ticket #${ticketId}`);
       setDispatchingId(null);
       
       // Fire confetti for successful dispatch!
@@ -196,6 +216,11 @@ function App() {
         colors: ['#00D2FF', '#00F5D4', '#9D4EDD']
       });
     }, 2000);
+  };
+
+  const handleCrisisChange = (level: 'NORMAL' | 'DRILL' | 'RED_ALERT') => {
+    setCrisisLevel(level);
+    addSystemLog(`Crisis warning status altered to [${level}] by Commander ${user || 'Admin'}`);
   };
 
   // Calculated properties based on rainfall, tide, and drainage
@@ -308,17 +333,36 @@ function App() {
             Data Silo Unifier
           </button>
 
-          {/* Mockup tabs */}
-          {['Resources', 'Weather', 'Alerts', 'Logs', 'Analytics'].map((tab) => (
-            <button
-              key={tab}
-              onClick={() => alert(`Operational Telemetry: The '${tab}' telemetry logs are actively feeding into the primary command matrix.`)}
-              className="tab-btn"
-              style={{ color: 'rgba(255,255,255,0.4)' }}
-            >
-              {tab}
-            </button>
-          ))}
+          <button
+            onClick={() => setActiveTab('resources')}
+            className={`tab-btn ${activeTab === 'resources' ? 'active' : ''}`}
+          >
+            Resources
+          </button>
+          <button
+            onClick={() => setActiveTab('weather')}
+            className={`tab-btn ${activeTab === 'weather' ? 'active' : ''}`}
+          >
+            Weather
+          </button>
+          <button
+            onClick={() => setActiveTab('alerts')}
+            className={`tab-btn ${activeTab === 'alerts' ? 'active' : ''}`}
+          >
+            Alerts
+          </button>
+          <button
+            onClick={() => setActiveTab('logs')}
+            className={`tab-btn ${activeTab === 'logs' ? 'active' : ''}`}
+          >
+            Logs
+          </button>
+          <button
+            onClick={() => setActiveTab('analytics')}
+            className={`tab-btn ${activeTab === 'analytics' ? 'active' : ''}`}
+          >
+            Analytics
+          </button>
 
           {/* Extra tabs for PDF/PPT documentation */}
           <button
@@ -371,7 +415,7 @@ function App() {
               <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 600 }}>CRISIS LEVEL:</span>
               <select
                 value={crisisLevel}
-                onChange={(e) => setCrisisLevel(e.target.value as any)}
+                onChange={(e) => handleCrisisChange(e.target.value as any)}
                 className="input-field"
                 style={{
                   padding: '6px 12px',
@@ -712,6 +756,330 @@ function App() {
 
         {activeTab === 'users' && isAdmin && (
           <UserDirectory currentUserEmail={userEmail} />
+        )}
+
+        {activeTab === 'resources' && (
+          <div className="glass-panel" style={{ padding: '24px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+              Active Fleet & Relief Assets Telemetry
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '16px', marginBottom: '24px' }}>
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>AVAILABLE VESSEL FLEET</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'white', marginTop: '6px' }}>35 Zodiacs</div>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>ACTIVE DEPLOYED CREWS</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-blue)', marginTop: '6px' }}>14 Crews</div>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>FIELD OFFICERS ON-CALL</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-green)', marginTop: '6px' }}>68 Officers</div>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <div style={{ fontSize: '0.75rem', color: '#64748B', fontWeight: 600 }}>RECONNAISSANCE DRONES</div>
+                <div style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--accent-purple)', marginTop: '6px' }}>6 Active</div>
+              </div>
+            </div>
+
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.85rem' }}>
+              <thead>
+                <tr style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid var(--border-light)' }}>
+                  <th style={{ padding: '12px', fontWeight: 700 }}>Asset ID</th>
+                  <th style={{ padding: '12px', fontWeight: 700 }}>Vessel Type</th>
+                  <th style={{ padding: '12px', fontWeight: 700 }}>Sector Ward Location</th>
+                  <th style={{ padding: '12px', fontWeight: 700 }}>Crew Size</th>
+                  <th style={{ padding: '12px', fontWeight: 700 }}>Telemetry Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {[
+                  { id: 'TCET-BOAT-01', type: 'Inflatable Zodiac', ward: 'WARD G/S (Dadar)', crew: 4, status: 'Deployed (Rescue enroute)', color: 'var(--accent-blue)' },
+                  { id: 'TCET-BOAT-02', type: 'Fiber-Reinforced Hull', ward: 'WARD L/S (Kurla)', crew: 3, status: 'Standby (Operational)', color: 'var(--accent-green)' },
+                  { id: 'TCET-BOAT-03', type: 'Aluminum Utility Craft', ward: 'WARD K/W (Andheri)', crew: 5, status: 'Deployed (Rescue complete)', color: 'rgba(255,255,255,0.5)' },
+                  { id: 'TCET-DRONE-A', type: 'DJI Matrice 300 RTK', ward: 'WARD D (Grant Rd)', crew: 1, status: 'Aerial Telemetry Ingestion', color: 'var(--accent-purple)' },
+                  { id: 'TCET-DRONE-B', type: 'DJI Matrice 300 RTK', ward: 'WARD H/E (Santacruz)', crew: 1, status: 'Standby (Charged)', color: 'var(--accent-green)' }
+                ].map((row, idx) => (
+                  <tr key={idx} style={{ borderBottom: '1px solid rgba(255,255,255,0.04)' }}>
+                    <td style={{ padding: '12px', fontWeight: 700 }}>{row.id}</td>
+                    <td style={{ padding: '12px' }}>{row.type}</td>
+                    <td style={{ padding: '12px' }}>{row.ward}</td>
+                    <td style={{ padding: '12px' }}>{row.crew} Personnel</td>
+                    <td style={{ padding: '12px', color: row.color, fontWeight: 600 }}>{row.status}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {activeTab === 'weather' && (
+          <div className="glass-panel" style={{ padding: '24px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+              Meteorological Forecasting & Tide Telemetry
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: '24px' }}>
+              {/* Left Column: Live Gauges */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+                <div style={{ background: 'rgba(255,255,255,0.01)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '12px', color: 'white' }}>Current Meteorological Telemetry</h3>
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                    <div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Precipitation Rate</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent-blue)', marginTop: '4px' }}>{rainfall} mm/hr</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>High Tide Height</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--accent-purple)', marginTop: '4px' }}>{tide} Meters</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Wind Velocity</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'white', marginTop: '4px' }}>24 km/h SW</div>
+                    </div>
+                    <div>
+                      <div style={{ fontSize: '0.75rem', color: '#64748B' }}>Relative Humidity</div>
+                      <div style={{ fontSize: '1.4rem', fontWeight: 800, color: 'white', marginTop: '4px' }}>92%</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div style={{ background: 'rgba(255,255,255,0.01)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                  <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '12px', color: 'white' }}>Next Astronomical High Tide</h3>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <div>
+                      <div style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--accent-yellow)' }}>T-Minus 02h 15m</div>
+                      <span style={{ fontSize: '0.75rem', color: '#64748B' }}>Predicted Peak Height: 5.4 meters at 23:45</span>
+                    </div>
+                    <span className="badge badge-warning" style={{ fontSize: '0.75rem' }}>Backflow Warning</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Column: 4-Hour Predictions */}
+              <div style={{ background: 'rgba(255,255,255,0.01)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <h3 style={{ fontSize: '1rem', fontWeight: 700, marginBottom: '12px', color: 'white' }}>Precipitation Forecast Matrix</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {[
+                    { time: '22:00', rain: '65 mm/hr', risk: 'Moderate', color: 'var(--accent-blue)' },
+                    { time: '23:00', rain: '110 mm/hr', risk: 'Severe (Tidal Peak)', color: 'var(--accent-red)' },
+                    { time: '00:00', rain: '125 mm/hr', risk: 'Severe (Tidal Peak)', color: 'var(--accent-red)' },
+                    { time: '01:00', rain: '45 mm/hr', risk: 'Moderate', color: 'var(--accent-blue)' }
+                  ].map((row, idx) => (
+                    <div key={idx} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.02)', padding: '10px 14px', borderRadius: '6px', border: '1px solid rgba(255,255,255,0.03)' }}>
+                      <div>
+                        <div style={{ fontSize: '0.8rem', fontWeight: 700, color: 'white' }}>{row.time} Forecast</div>
+                        <div style={{ fontSize: '0.7rem', color: '#64748B', marginTop: '2px' }}>Rainfall Rate: {row.rain}</div>
+                      </div>
+                      <span style={{ fontSize: '0.7rem', fontWeight: 700, color: row.color }}>{row.risk}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'alerts' && (
+          <div className="glass-panel" style={{ padding: '24px', textAlign: 'left' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)', margin: 0 }}>
+                Municipal Broadcast Center
+              </h2>
+              <span className="badge badge-danger">Live Stream</span>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: isAdmin ? '1.5fr 1fr' : '1fr', gap: '24px' }}>
+              {/* Broadcast Alert List */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                {broadcastAlerts.map((alertItem: any) => (
+                  <div key={alertItem.id} style={{
+                    padding: '16px',
+                    background: 'rgba(255,255,255,0.01)',
+                    border: '1px solid rgba(255,255,255,0.04)',
+                    borderRadius: '8px',
+                    borderLeft: `4px solid ${
+                      alertItem.type === 'CRITICAL' ? 'var(--accent-red)' :
+                      alertItem.type === 'WARNING' ? 'var(--accent-yellow)' : 'var(--accent-blue)'
+                    }`,
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center'
+                  }}>
+                    <div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <span style={{ fontSize: '0.7rem', color: '#64748B', fontWeight: 700 }}>TIMESTAMP: {alertItem.time}</span>
+                        <span style={{
+                          fontSize: '0.6rem',
+                          fontWeight: 700,
+                          padding: '1px 6px',
+                          borderRadius: '4px',
+                          background: alertItem.type === 'CRITICAL' ? 'rgba(239,68,68,0.1)' : alertItem.type === 'WARNING' ? 'rgba(245,158,11,0.1)' : 'rgba(0,210,255,0.1)',
+                          color: alertItem.type === 'CRITICAL' ? 'var(--accent-red)' : alertItem.type === 'WARNING' ? 'var(--accent-yellow)' : 'var(--accent-blue)'
+                        }}>{alertItem.type}</span>
+                      </div>
+                      <p style={{ fontSize: '0.85rem', color: '#E2E8F0', marginTop: '6px', fontWeight: 500 }}>{alertItem.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Admin Broadcast controls */}
+              {isAdmin && (
+                <div style={{ background: 'rgba(255,255,255,0.02)', padding: '20px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column', gap: '16px', height: 'fit-content' }}>
+                  <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: 'white', margin: 0 }}>Broadcast Custom Alert</h3>
+                  
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 600 }}>Alert Message</label>
+                    <input
+                      id="custom-alert-text"
+                      type="text"
+                      className="input-field"
+                      placeholder="e.g. Hindmata flyover closed due to 3 feet water logging..."
+                    />
+                  </div>
+
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+                    <label style={{ fontSize: '0.75rem', color: '#94A3B8', fontWeight: 600 }}>Severity Level</label>
+                    <select id="custom-alert-level" className="input-field" style={{ cursor: 'pointer' }}>
+                      <option value="INFO">INFO (Blue)</option>
+                      <option value="WARNING">WARNING (Yellow)</option>
+                      <option value="CRITICAL">CRITICAL (Red)</option>
+                    </select>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      const textInput = document.getElementById('custom-alert-text') as HTMLInputElement;
+                      const levelSelect = document.getElementById('custom-alert-level') as HTMLSelectElement;
+                      if (!textInput || !textInput.value) {
+                        alert("Alert message cannot be blank!");
+                        return;
+                      }
+                      const newAlert = {
+                        id: Date.now(),
+                        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }),
+                        type: levelSelect.value,
+                        text: textInput.value
+                      };
+                      setBroadcastAlerts(prev => [newAlert, ...prev]);
+                      addSystemLog(`Broadcasted municipal alert: "${textInput.value}"`);
+                      textInput.value = '';
+                      alert("Municipal Alert broadcasted successfully!");
+                    }}
+                    className="btn-primary"
+                    style={{ background: 'var(--gradient-primary)', border: 'none', padding: '10px' }}
+                  >
+                    Broadcast Alert
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'logs' && (
+          <div className="glass-panel" style={{ padding: '24px', textAlign: 'left', display: 'flex', flexDirection: 'column', height: '540px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+              <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)', margin: 0 }}>
+                System Audit Log Console
+              </h2>
+              <button
+                onClick={() => {
+                  setSystemLogs([`[${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}] - Console log history flushed by Commander.`]);
+                }}
+                className="btn-secondary"
+                style={{ padding: '4px 10px', fontSize: '0.7rem' }}
+              >
+                Clear Console
+              </button>
+            </div>
+            
+            <div style={{
+              background: '#040711',
+              border: '1px solid var(--border-light)',
+              borderRadius: '8px',
+              padding: '16px',
+              fontFamily: 'monospace',
+              fontSize: '0.75rem',
+              color: '#34D399',
+              overflowY: 'auto',
+              flex: 1,
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '6px',
+              boxShadow: 'inset 0 0 10px rgba(0, 245, 212, 0.05)'
+            }}>
+              {systemLogs.map((logLine, idx) => (
+                <div key={idx} style={{ borderBottom: '1px dashed rgba(52, 211, 153, 0.05)', paddingBottom: '4px' }}>
+                  <span style={{ color: 'rgba(52, 211, 153, 0.5)' }}>&gt;</span> {logLine}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'analytics' && (
+          <div className="glass-panel" style={{ padding: '24px', textAlign: 'left' }}>
+            <h2 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-cyan)', marginBottom: '16px', borderBottom: '1px solid var(--border-light)', paddingBottom: '12px' }}>
+              Inundation Analytics & Submergence Distribution
+            </h2>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '20px', marginBottom: '24px' }}>
+              {/* Submergence Risk by Ward */}
+              <div style={{ background: 'rgba(255,255,255,0.01)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', marginBottom: '16px' }}>Submergence Risk Indices</h3>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                  {[
+                    { ward: 'WARD L/S (Kurla)', val: 95, color: 'var(--accent-red)' },
+                    { ward: 'WARD G/S (Dadar)', val: 80, color: 'var(--accent-red)' },
+                    { ward: 'WARD K/W (Andheri)', val: 55, color: 'var(--accent-yellow)' },
+                    { ward: 'WARD H/W (Bandra)', val: 30, color: 'var(--accent-blue)' }
+                  ].map((row, idx) => (
+                    <div key={idx}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#94A3B8', marginBottom: '4px' }}>
+                        <span>{row.ward}</span>
+                        <span style={{ color: row.color, fontWeight: 700 }}>{row.val}%</span>
+                      </div>
+                      <div style={{ height: '6px', background: 'rgba(255,255,255,0.05)', borderRadius: '3px', overflow: 'hidden' }}>
+                        <div style={{ width: `${row.val}%`, height: '100%', background: row.color, borderRadius: '3px' }} />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Rescue Ticket Statistics */}
+              <div style={{ background: 'rgba(255,255,255,0.01)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)', display: 'flex', flexDirection: 'column' }}>
+                <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', marginBottom: '16px' }}>SOS Dispatch Ratios</h3>
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', gap: '16px' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Active Pending Tickets</span>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-red)' }}>{sosRequests.filter(t => t.status === 'PENDING').length}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Dispatched Vessels</span>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--accent-green)' }}>{sosRequests.filter(t => t.status === 'DISPATCHED').length}</span>
+                  </div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#94A3B8' }}>Total Ingested Incidents</span>
+                    <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'white' }}>{sosRequests.length}</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Rain Correlation Index */}
+              <div style={{ background: 'rgba(255,255,255,0.01)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-light)' }}>
+                <h3 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'white', marginBottom: '16px' }}>Incidence Correlation</h3>
+                <div style={{ height: '120px', display: 'flex', alignItems: 'flex-end', gap: '12px', justifyContent: 'center' }}>
+                  {[30, 45, 80, 110, 130, 95].map((val, idx) => (
+                    <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '6px', flex: 1 }}>
+                      <div style={{ height: `${val * 0.7}px`, width: '12px', background: val > 90 ? 'var(--gradient-danger)' : 'var(--gradient-primary)', borderRadius: '2px' }} />
+                      <span style={{ fontSize: '0.65rem', color: '#64748B' }}>T-{6 - idx}h</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         )}
 
       </main>
